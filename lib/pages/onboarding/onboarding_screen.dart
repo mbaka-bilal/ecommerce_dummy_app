@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../ui/circular_progress.dart';
+import '../../ui/mybutton.dart';
 import '../../utils/app_images.dart';
 import '../../utils/appstyles.dart';
 
@@ -12,79 +16,84 @@ class OnBoardingScreen extends StatefulWidget {
 }
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
+  int index = 0;
+  PageController pageController = PageController();
+  final headerTexts = <String>[
+    "Biggest Sell at Your Fingerprint",
+    "Pay Secure Payment Gateway",
+    "Get Faster and Safe Delivery"
+  ];
+  final images = <String>[
+    AppImages.firstOnBoardingImage,
+    AppImages.secondOnBoardingImage,
+    AppImages.thirdOnBoardingImage,
+  ];
+
   @override
   Widget build(BuildContext context) {
+    Timer.periodic(const Duration(seconds: 5), (timer) {
+      setState(() {
+        index = pageController.page!.round() + 1;
+      });
+
+      if (index > 2) {
+        setState(() {
+          index = 0;
+        });
+        pageController.animateToPage(index,
+            duration: const Duration(seconds: 1), curve: Curves.easeIn);
+      } else {
+        pageController.animateToPage(index,
+            duration: const Duration(seconds: 1), curve: Curves.easeIn);
+      }
+    });
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            children: [],
+          const Expanded(
+            child: Column(
+              children: [],
+            ),
           ),
-          Column(
-            children: [
-              SizedBox(
-                  width: double.infinity,
-                  child: SvgPicture.asset(
-                    AppImages.firstOnBoardingImage,
-                    fit: BoxFit.fitWidth,
-                  )),
-              SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                  width: 150,
-                  child: Text(
-                    "Biggest sale at your Fingertip",
-                    textAlign: TextAlign.center,
-                  )),
-              SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                  width: 250,
-                  child: Text(
-                    "Find your best products from popular shop without any delay",
-                    textAlign: TextAlign.center,
-                  ))
-            ],
+          Expanded(
+            flex: 5,
+            child: PageView.builder(
+              controller: pageController,
+              itemBuilder: (context, index) => PageContent(
+                  imagePath: images[index], headingText: headerTexts[index]),
+            ),
           ),
-          Padding(
-            padding:
-                const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(onPressed: () {}, child: Text("Skip")),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: AppColors.blue,
-                      radius: 5,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    CircleAvatar(
-                      backgroundColor: Colors.grey,
-                      radius: 5,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    CircleAvatar(
-                      backgroundColor: Colors.grey,
-                      radius: 5,
-                    )
-                  ],
-                ),
-                MyButton(
-                  text: "Next",
-                  buttonColor: AppColors.blue,
-                  height: 36,
-                ),
-              ],
+          Expanded(
+            child: Padding(
+              padding:
+                  const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        "Skip",
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(color: Colors.grey),
+                      )),
+                  CircleProgress(index: index, range: 3),
+                  MyButton(
+                    text: "Next",
+                    textStyle: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(color: Colors.white),
+                    buttonColor: AppColors.blue,
+                    height: 36,
+                    width: 100,
+                  ),
+                ],
+              ),
             ),
           )
         ],
@@ -93,47 +102,51 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 }
 
-class MyButton extends StatelessWidget {
-  const MyButton(
-      {Key? key,
-      this.function,
-      required this.text,
-      this.textStyle,
-      this.buttonColor,
-      this.width,
-      this.height})
-      : super(key: key);
-  final Function? function;
-  final String text;
-  final TextStyle? textStyle;
-  final Color? buttonColor;
-  final double? width;
-  final double? height;
+
+
+class PageContent extends StatelessWidget {
+  const PageContent({
+    Key? key,
+    required this.imagePath,
+    required this.headingText,
+  }) : super(key: key);
+
+  final String imagePath;
+  final String headingText;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      height: height,
-      child: ElevatedButton(
-        onPressed: () {
-          function;
-        },
-        style: ButtonStyle(
-            backgroundColor:
-                MaterialStateProperty.all(buttonColor ?? buttonColor),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(9),
-            ))),
-        child: Text(
-          text,
-          style: (textStyle == null)
-              ? const TextStyle(
-                  color: Colors.white,
-                )
-              : textStyle,
+    return Column(
+      children: [
+        SizedBox(
+            width: double.infinity,
+            child: SvgPicture.asset(
+              imagePath,
+              fit: BoxFit.fitWidth,
+            )),
+        const SizedBox(
+          height: 20,
         ),
-      ),
+        SizedBox(
+            width: 200,
+            child: Text(
+              headingText,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium,
+            )),
+        const SizedBox(
+          height: 10,
+        ),
+        SizedBox(
+            width: 300,
+            child: Text(
+              "Find your best products from popular shop without any delay",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: Colors.grey,
+                  ),
+            ))
+      ],
     );
   }
 }
