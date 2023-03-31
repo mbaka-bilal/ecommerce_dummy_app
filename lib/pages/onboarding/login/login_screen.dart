@@ -1,4 +1,5 @@
 
+import 'package:ecommerce_dummy_app/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -15,6 +16,8 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     const double smallSpace = 10;
     const double mediumSpace = 20;
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
 
     Widget socialButtons(
         {required Widget leadingIcon, required String socialName,required Function function}) {
@@ -81,15 +84,15 @@ class LoginScreen extends StatelessWidget {
                         height: mediumSpace,
                       ),
                       MyFormField(
+                        formFieldValidator: FormValidator.validateEmail,
+                        textEditingController: emailController,
+                        isPassword: false,
                         hint: Text("jessicamaria@infomail.com",
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall!
                                 .copyWith(color: Colors.grey)),
-                        trailingIcon: const Icon(
-                          Icons.check_circle,
-                          color: AppColors.success,
-                        ),
+
                       ),
                       const SizedBox(
                         height: mediumSpace,
@@ -102,6 +105,9 @@ class LoginScreen extends StatelessWidget {
                         height: mediumSpace,
                       ),
                       MyFormField(
+                        formFieldValidator: FormValidator.validatePassword,
+                        isPassword: true,
+                        textEditingController: passwordController,
                         hint: Row(
                           children: List.generate(
                               10,
@@ -114,10 +120,7 @@ class LoginScreen extends StatelessWidget {
                                 ),
                               )),
                         ),
-                        trailingIcon: const Icon(
-                          Icons.check_circle,
-                          color: AppColors.success,
-                        ),
+
                       ),
                       const SizedBox(
                         height: 10,
