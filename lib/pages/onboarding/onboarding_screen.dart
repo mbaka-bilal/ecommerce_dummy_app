@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ecommerce_dummy_app/pages/onboarding/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -16,6 +17,7 @@ class OnBoardingScreen extends StatefulWidget {
 }
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
+  late Timer? timer;
   int index = 0;
   PageController pageController = PageController();
   final headerTexts = <String>[
@@ -30,24 +32,40 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    Timer.periodic(const Duration(seconds: 5), (timer) {
-      setState(() {
-        index = pageController.page!.round() + 1;
-      });
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (mounted) {
+        setState(() {
+          if (pageController.page!.round() + 1 > 2) {
+            index = 0;
+          } else {
+            index = pageController.page!.round() + 1;
+          }
+        });
+      }
 
       if (index > 2) {
-        setState(() {
-          index = 0;
-        });
-        pageController.animateToPage(index,
+        pageController.animateToPage(0,
             duration: const Duration(seconds: 1), curve: Curves.easeIn);
       } else {
         pageController.animateToPage(index,
             duration: const Duration(seconds: 1), curve: Curves.easeIn);
       }
     });
+  }
 
+  @override
+  void dispose() {
+    if (timer != null){
+      timer!.cancel();
+    }
+    pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -73,7 +91,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        // timer ?? timer!.cancel();
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => const LoginScreen()),
+                            (route) => false);
+                      },
                       child: Text(
                         "Skip",
                         style: Theme.of(context)
@@ -101,8 +125,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     );
   }
 }
-
-
 
 class PageContent extends StatelessWidget {
   const PageContent({

@@ -19,11 +19,21 @@ class MyApp extends StatelessWidget {
         fontFamily: "Poppins",
         textTheme: const TextTheme(
           titleMedium: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 20
+          ),
+          titleLarge: TextStyle(
             fontWeight: FontWeight.w600,
           ),
+
           bodySmall: TextStyle(
             fontWeight: FontWeight.w400
+          ),
+          bodyMedium: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14
           )
+
         ),
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.blue),
         useMaterial3: true,

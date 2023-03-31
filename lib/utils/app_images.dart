@@ -7,5 +7,6 @@ class AppImages {
   static const firstOnBoardingImage = "${basePath}onboarding_one.svg";
   static const secondOnBoardingImage = "${basePath}onboarding_two.svg";
   static const thirdOnBoardingImage = "${basePath}onboarding_two.svg";
-  
+  static const faceBook = "${basePath}facebook.svg";
+  static const google = "${basePath}google.svg";
 }
