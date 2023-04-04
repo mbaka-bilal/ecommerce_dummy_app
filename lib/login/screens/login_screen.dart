@@ -1,3 +1,4 @@
+import 'package:ecommerce_dummy_app/forgot_password/screens/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,7 +10,6 @@ import '../../../utils/appstyles.dart';
 import '../../../utils/validator.dart';
 import '../../../widgets/my_form.dart';
 import '../../../widgets/mybutton.dart';
-
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -138,9 +138,14 @@ class LoginScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  context.read<LoginFormStatus>().reset();
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ForgotPasswordScreen()));
+                                },
                                 child: Text(
-                                  "Forgot password",
+                                  "Forgot password ?",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall!

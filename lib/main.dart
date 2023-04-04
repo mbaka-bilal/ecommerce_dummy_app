@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
             ),
             titleLarge: TextStyle(
               fontWeight: FontWeight.w600,
+              fontSize: 28,
             ),
 
             bodySmall: TextStyle(

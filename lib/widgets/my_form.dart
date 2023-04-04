@@ -1,7 +1,7 @@
-import 'package:ecommerce_dummy_app/bloc/form_state_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../bloc/form_state_cubit.dart';
 import '../utils/appstyles.dart';
 
 class MyFormField extends StatefulWidget {

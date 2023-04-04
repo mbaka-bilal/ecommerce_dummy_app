@@ -9,4 +9,7 @@ class AppImages {
   static const thirdOnBoardingImage = "${basePath}onboarding_two.svg";
   static const faceBook = "${basePath}facebook.svg";
   static const google = "${basePath}google.svg";
+  static const mail = "${basePath}mail.svg";
+  static const mailPng = "${basePath}mail.png";
+  static const ghuxt = "${basePath}ghuxt.svg";
 }

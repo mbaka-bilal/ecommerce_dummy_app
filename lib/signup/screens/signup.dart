@@ -22,7 +22,10 @@ class SignUpScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: ()=>Navigator.of(context).pop(),
+        leading: IconButton(onPressed: () {
+          context.read<LoginFormStatus>().reset();
+          Navigator.of(context).pop();
+        },
         icon: const Icon(Icons.arrow_back_ios,color: AppColors.gray,),
         ),
         title: Text(
