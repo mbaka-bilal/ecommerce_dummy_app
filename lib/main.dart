@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'pages/onboarding/login/bloc/login_cubit.dart';
-import 'pages/onboarding/splash_screen.dart';
+import 'bloc/form_state_cubit.dart';
+import 'onboarding/splash_screen.dart';
 import 'utils/appstyles.dart';
 
 void main() {

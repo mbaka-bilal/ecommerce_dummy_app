@@ -1,15 +1,15 @@
-
-import 'package:ecommerce_dummy_app/utils/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../ui/my_form.dart';
-import '../../../ui/mybutton.dart';
-
+import '../../../bloc/form_state_cubit.dart';
+import '../../../signup/screens/signup.dart';
 import '../../../utils/app_images.dart';
 import '../../../utils/appstyles.dart';
-import 'bloc/login_cubit.dart';
+import '../../../utils/validator.dart';
+import '../../../widgets/my_form.dart';
+import '../../../widgets/mybutton.dart';
+
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -20,14 +20,16 @@ class LoginScreen extends StatelessWidget {
     const double mediumSpace = 20;
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     Widget socialButtons(
-        {required Widget leadingIcon, required String socialName,required Function function}) {
+        {required Widget leadingIcon,
+        required String socialName,
+        required Function function}) {
       return InkWell(
         onTap: () => function(),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           margin: const EdgeInsets.symmetric(horizontal: 15),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
@@ -76,7 +78,7 @@ class LoginScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Form(
-                    key: _formKey,
+                    key: formKey,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +91,7 @@ class LoginScreen extends StatelessWidget {
                           height: mediumSpace,
                         ),
                         MyFormField(
-                          formKey: _formKey,
+                          formKey: formKey,
                           formFieldValidator: FormValidator.validateEmail,
                           textEditingController: emailController,
                           keyboardType: TextInputType.emailAddress,
@@ -99,7 +101,6 @@ class LoginScreen extends StatelessWidget {
                                   .textTheme
                                   .bodySmall!
                                   .copyWith(color: Colors.grey)),
-
                         ),
                         const SizedBox(
                           height: mediumSpace,
@@ -112,7 +113,7 @@ class LoginScreen extends StatelessWidget {
                           height: mediumSpace,
                         ),
                         MyFormField(
-                          formKey: _formKey,
+                          formKey: formKey,
                           formFieldValidator: FormValidator.validatePassword,
                           isPassword: true,
                           keyboardType: TextInputType.name,
@@ -120,16 +121,15 @@ class LoginScreen extends StatelessWidget {
                           hint: Row(
                             children: List.generate(
                                 10,
-                                    (index) => const Padding(
-                                  padding:
-                                  EdgeInsets.symmetric(horizontal: 3.0),
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    radius: 5,
-                                  ),
-                                )),
+                                (index) => const Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 3.0),
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.grey,
+                                        radius: 5,
+                                      ),
+                                    )),
                           ),
-
                         ),
                         const SizedBox(
                           height: 10,
@@ -151,18 +151,20 @@ class LoginScreen extends StatelessWidget {
                         const SizedBox(
                           height: mediumSpace,
                         ),
-                        BlocBuilder<LoginFormStatus,bool>(
-                          builder: (context,state) => MyButton(
+                        BlocBuilder<LoginFormStatus, bool>(
+                          builder: (context, state) => MyButton(
                             text: "Sign in",
                             height: 50,
                             width: double.infinity,
-                            function: (state) ? () {
-                              // print ("button pressed");
-                              // if (!_formKey.currentState!.validate()){
-                              //   print ("successfull");
-                              //   return;
-                              // }
-                            } : null,
+                            function: (state)
+                                ? () {
+                                    // print ("button pressed");
+                                    // if (!_formKey.currentState!.validate()){
+                                    //   print ("successfull");
+                                    //   return;
+                                    // }
+                                  }
+                                : null,
                             buttonColor: AppColors.blue,
                           ),
                         ),
@@ -177,7 +179,8 @@ class LoginScreen extends StatelessWidget {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: mediumSpace),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: mediumSpace),
                               child: Text(
                                 "Or sign in with",
                                 style: Theme.of(context)
@@ -200,10 +203,10 @@ class LoginScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             socialButtons(
-                                leadingIcon: SvgPicture.asset(AppImages.faceBook),
+                                leadingIcon:
+                                    SvgPicture.asset(AppImages.faceBook),
                                 socialName: "Facebook",
-                                function: () {}
-                            ),
+                                function: () {}),
                             socialButtons(
                                 function: () {},
                                 leadingIcon: SvgPicture.asset(AppImages.google),
@@ -213,21 +216,32 @@ class LoginScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Don't have an account",style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: Colors.grey
-                      ),),
+                      Text(
+                        "Don't have an account",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(color: Colors.grey),
+                      ),
                       const SizedBox(
                         width: smallSpace,
                       ),
                       InkWell(
-                        onTap: () {},
-                        child: Text("Sign Up",style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: AppColors.blue
-                        ),),
+                        onTap: () {
+                          context.read<LoginFormStatus>().reset();
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const SignUpScreen()));
+                        },
+                        child: Text(
+                          "Sign Up",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(color: AppColors.blue),
+                        ),
                       )
                     ],
                   )
@@ -240,5 +254,3 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
-
-

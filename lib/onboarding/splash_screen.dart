@@ -1,8 +1,8 @@
-import 'package:ecommerce_dummy_app/pages/onboarding/onboarding_screen.dart';
-import 'package:ecommerce_dummy_app/utils/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../onboarding/onboarding_screen.dart';
+import '../../utils/app_images.dart';
 import '../../utils/appstyles.dart';
 
 class SplashScreen extends StatelessWidget {

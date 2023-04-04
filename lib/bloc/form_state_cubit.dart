@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../models/login_form_status.dart';
 
 class LoginFormStatus extends Cubit<bool>{
   LoginFormStatus(): super(false);
@@ -17,5 +16,8 @@ class LoginFormStatus extends Cubit<bool>{
     }
   }
 
+  void reset() {
+    emit(false);
+  }
 
 }

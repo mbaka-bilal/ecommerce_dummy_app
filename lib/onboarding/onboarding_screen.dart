@@ -1,13 +1,14 @@
 import 'dart:async';
 
-import 'package:ecommerce_dummy_app/pages/onboarding/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../ui/circular_progress.dart';
-import '../../ui/mybutton.dart';
+import '../login/screens/login_screen.dart';
 import '../../utils/app_images.dart';
 import '../../utils/appstyles.dart';
+import '../../widgets/circular_progress.dart';
+import '../../widgets/mybutton.dart';
+
 
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({Key? key}) : super(key: key);
@@ -107,6 +108,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       )),
                   CircleProgress(index: index, range: 3),
                   MyButton(
+                    function: () {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => const LoginScreen()),
+                              (route) => false);
+                    },
                     text: "Next",
                     textStyle: Theme.of(context)
                         .textTheme
@@ -146,9 +153,6 @@ class PageContent extends StatelessWidget {
               imagePath,
               fit: BoxFit.fitWidth,
             )),
-        // const SizedBox(
-        //   height: 20,
-        // ),
         SizedBox(
             width: 200,
             child: Text(
