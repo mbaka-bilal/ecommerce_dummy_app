@@ -86,7 +86,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           Expanded(
             child: Padding(
               padding:
-                  const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+                  const EdgeInsets.only(left: 20.0, right: 20.0,),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -146,9 +146,9 @@ class PageContent extends StatelessWidget {
               imagePath,
               fit: BoxFit.fitWidth,
             )),
-        const SizedBox(
-          height: 20,
-        ),
+        // const SizedBox(
+        //   height: 20,
+        // ),
         SizedBox(
             width: 200,
             child: Text(

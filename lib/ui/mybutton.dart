@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 class MyButton extends StatelessWidget {
   const MyButton(
       {Key? key,
-        this.function,
-        required this.text,
-        this.textStyle,
-        this.buttonColor,
-        this.width,
-        this.height})
+      this.function,
+      required this.text,
+      this.textStyle,
+      this.buttonColor,
+      this.width,
+      this.height})
       : super(key: key);
   final Function? function;
   final String text;
@@ -23,12 +23,19 @@ class MyButton extends StatelessWidget {
       width: width,
       height: height,
       child: ElevatedButton(
-        onPressed: () {
-          function;
-        },
+        onPressed: (function == null)
+            ? null
+            : () {
+                function!();
+              },
         style: ButtonStyle(
-            backgroundColor:
-            MaterialStateProperty.all(buttonColor ?? buttonColor),
+            backgroundColor: MaterialStateProperty.resolveWith((states) {
+              if (states.contains(MaterialState.disabled)) {
+                return Colors.grey;
+              } else {
+                return buttonColor ?? buttonColor;
+              }
+            }),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(9),
             ))),
@@ -36,8 +43,8 @@ class MyButton extends StatelessWidget {
           text,
           style: (textStyle == null)
               ? const TextStyle(
-            color: Colors.white,
-          )
+                  color: Colors.white,
+                )
               : textStyle,
         ),
       ),

@@ -1,4 +1,6 @@
+import 'package:ecommerce_dummy_app/pages/onboarding/login/bloc/login_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../utils/appstyles.dart';
 
@@ -8,7 +10,11 @@ class MyFormField extends StatefulWidget {
       required this.hint,
       this.trailingIcon,
       required this.isPassword,
-      required this.textEditingController, required this.formFieldValidator})
+      required this.textEditingController,
+      required this.formFieldValidator,
+        this.formKey, this.keyboardType,
+
+        })
       : super(key: key);
 
   final Widget hint;
@@ -16,6 +22,8 @@ class MyFormField extends StatefulWidget {
   final bool isPassword;
   final TextEditingController textEditingController;
   final FormFieldValidator<String?> formFieldValidator;
+  final GlobalKey<FormState>? formKey;
+  final TextInputType? keyboardType;
 
   @override
   State<MyFormField> createState() => _MyFormFieldState();
@@ -24,9 +32,9 @@ class MyFormField extends StatefulWidget {
 class _MyFormFieldState extends State<MyFormField> {
   final focusNode = FocusNode();
   bool showHint = true;
-  bool showPassword = false;
+  bool hidePassword = true;
   bool showSuffixIcon = false;
-
+  String? text;
   Widget? endIcon;
 
   @override
@@ -34,16 +42,28 @@ class _MyFormFieldState extends State<MyFormField> {
     super.initState();
 
     focusNode.addListener(() {
+      // print ("listener activated");
       if (focusNode.hasFocus) {
         setState(() {
           showHint = false;
         });
-      } else {
-        if (widget.textEditingController.text.trim().isEmpty) {
-          showHint = true;
+      }
+
+      if (!focusNode.hasFocus) {
+        // print("does not have focus");
+        if (text == null || text!.trim() == "") {
+          setState(() {
+            showHint = true;
+          });
         }
       }
     });
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -51,14 +71,19 @@ class _MyFormFieldState extends State<MyFormField> {
     return Stack(
       children: [
         TextFormField(
+          keyboardType: widget.keyboardType,
+          validator: widget.formFieldValidator,
           focusNode: focusNode,
           controller: widget.textEditingController,
-          obscureText: showPassword,
+          obscureText: (widget.isPassword) ? hidePassword : false,
           onChanged: (str) {
-            if (str.trim() == ""){
+            context.read<LoginFormStatus>().checkLoginFormStatus(widget.formKey!);
+            if (str.trim() == "") {
               endIcon = null;
-            }else{
-              if (widget.formFieldValidator(str) == null){
+              text = null;
+            } else {
+              text = str;
+              if (widget.formFieldValidator(str) == null) {
                 setState(() {
                   showSuffixIcon = true;
                   endIcon = const Icon(
@@ -66,17 +91,18 @@ class _MyFormFieldState extends State<MyFormField> {
                     color: AppColors.success,
                   );
                 });
-              }else{
+                //update the email part of the form.
+
+              } else {
                 setState(() {
                   showSuffixIcon = false;
-                  endIcon =Icon(
+                  endIcon = const Icon(
                     Icons.close,
                     color: Colors.red,
                   );
                 });
               }
             }
-
           },
           decoration: InputDecoration(
               fillColor: AppColors.gray07,
@@ -85,14 +111,14 @@ class _MyFormFieldState extends State<MyFormField> {
                   ? IconButton(
                       onPressed: () {
                         setState(() {
-                          showPassword = !showPassword;
+                          hidePassword = !hidePassword;
                         });
                       },
-                      icon: (showPassword)
+                      icon: (hidePassword)
                           ? const Icon(Icons.visibility_off)
                           : const Icon(Icons.visibility),
                     )
-                  :  endIcon,
+                  : endIcon,
               border: OutlineInputBorder(
                   borderSide: BorderSide.none,
                   borderRadius: BorderRadius.circular(12))),
