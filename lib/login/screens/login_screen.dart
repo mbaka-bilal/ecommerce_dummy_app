@@ -78,9 +78,9 @@ class LoginScreen extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(30),
-              child: BlocListener<AuthenticationBloc,AuthenticationState>(
-                listener: (context,state) {
-                  switch (state.authenticationModel.authenticationStatus){
+              child: BlocListener<AuthenticationBloc, AuthenticationState>(
+                listener: (context, state) {
+                  switch (state.authenticationModel.authenticationStatus) {
                     case AuthenticationStatus.loginInProgress:
                       showDialog(
                           barrierDismissible: false,
@@ -93,7 +93,6 @@ class LoginScreen extends StatelessWidget {
                           });
                       break;
                     case AuthenticationStatus.loginSuccessfully:
-                      Navigator.of(context).pop();
                       showDialog(
                           barrierDismissible: false,
                           context: context,
@@ -116,7 +115,6 @@ class LoginScreen extends StatelessWidget {
                                 text: state.authenticationModel.statusMessage!);
                           });
                       break;
-
                   }
                 },
                 child: Column(
@@ -169,8 +167,8 @@ class LoginScreen extends StatelessWidget {
                               children: List.generate(
                                   10,
                                   (index) => const Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(horizontal: 3.0),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 3.0),
                                         child: CircleAvatar(
                                           backgroundColor: Colors.grey,
                                           radius: 5,
@@ -187,9 +185,10 @@ class LoginScreen extends StatelessWidget {
                               TextButton(
                                   onPressed: () {
                                     context.read<LoginFormStatus>().reset();
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ForgotPasswordScreen()));
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const ForgotPasswordScreen()));
                                   },
                                   child: Text(
                                     "Forgot password ?",
@@ -210,12 +209,13 @@ class LoginScreen extends StatelessWidget {
                               width: double.infinity,
                               function: (state)
                                   ? () {
-                                RepositoryProvider.of<AuthenticationRepository>(
-                                    context)
-                                    .signInEmailAndPassword(
-                                    email: emailController.text.trim(),
-                                    password:
-                                    passwordController.text.trim());
+                                      RepositoryProvider.of<
+                                              AuthenticationRepository>(context)
+                                          .signInEmailAndPassword(
+                                              email:
+                                                  emailController.text.trim(),
+                                              password: passwordController.text
+                                                  .trim());
                                     }
                                   : null,
                               buttonColor: AppColors.blue,
@@ -261,8 +261,13 @@ class LoginScreen extends StatelessWidget {
                                   socialName: "Facebook",
                                   function: () {}),
                               socialButtons(
-                                  function: () {},
-                                  leadingIcon: SvgPicture.asset(AppImages.google),
+                                  function: () async {
+                                    await RepositoryProvider.of<
+                                            AuthenticationRepository>(context)
+                                        .signInWithGoogle();
+                                  },
+                                  leadingIcon:
+                                      SvgPicture.asset(AppImages.google),
                                   socialName: "Google"),
                             ],
                           ),

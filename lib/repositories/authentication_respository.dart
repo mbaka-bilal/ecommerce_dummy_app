@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../models/authentication_model.dart';
 
@@ -15,6 +16,33 @@ class AuthenticationRepository {
     yield* _controller.stream;
   }
 
+  Future<void> signInWithGoogle() async {
+    try{
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      final GoogleSignInAuthentication? googleAuth = await googleUser!.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth!.accessToken,
+        idToken: googleAuth!.idToken,
+      );
+      //
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      Future.delayed(Duration(milliseconds: 300),() {
+        _controller.add(AuthenticationModel(
+            authenticationStatus: AuthenticationStatus.loginSuccessfully,
+            statusMessage: "Access granted, \n Don't shop responsibly"));
+      });
+    }
+  catch (e){
+    print ("could not login with google $e");
+    await Future.delayed(
+        const Duration(milliseconds: 300),
+            () => _controller.add(AuthenticationModel(
+            authenticationStatus: AuthenticationStatus.loginError,
+            statusMessage: "Unknown error")));
+  }}
+
   Future<void> signInEmailAndPassword(
       {required String email, required String password}) async {
     _controller.add(AuthenticationModel(
@@ -23,17 +51,12 @@ class AuthenticationRepository {
     try {
       await _fAuth.signInWithEmailAndPassword(email: email, password: password);
       await Future.delayed(
-          Duration(milliseconds: 300),
+          const Duration(milliseconds: 300),
           () => _controller.add(AuthenticationModel(
               authenticationStatus: AuthenticationStatus.loginSuccessfully,
               statusMessage: "Access granted, \n Don't shop responsibly")));
     } on FirebaseAuthException catch (e) {
       print("caught sign in Error signin in $e");
-      // await Future.delayed(Duration(milliseconds: 300), () {
-      //   _controller.add(AuthenticationModel(
-      //       authenticationStatus: AuthenticationStatus.loginError,
-      //       statusMessage: "Unknown Error"));
-      // });
       switch (e.code){
         case 'network-request-failed':
           await Future.delayed(
@@ -59,7 +82,7 @@ class AuthenticationRepository {
       }
     } catch (e) {
       print("Uncaught sign in error $e");
-      await Future.delayed(Duration(milliseconds: 300), () {
+      await Future.delayed(const Duration(milliseconds: 300), () {
         _controller.add(AuthenticationModel(
             authenticationStatus: AuthenticationStatus.loginError,
             statusMessage: "Unknown Error"));
