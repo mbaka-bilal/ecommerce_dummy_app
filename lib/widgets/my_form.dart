@@ -5,17 +5,16 @@ import '../bloc/form_state_cubit.dart';
 import '../utils/appstyles.dart';
 
 class MyFormField extends StatefulWidget {
-  const MyFormField(
-      {Key? key,
-      required this.hint,
-      this.trailingIcon,
-      required this.isPassword,
-      required this.textEditingController,
-      required this.formFieldValidator,
-        this.formKey, this.keyboardType,
-
-        })
-      : super(key: key);
+  const MyFormField({
+    Key? key,
+    required this.hint,
+    this.trailingIcon,
+    required this.isPassword,
+    required this.textEditingController,
+    required this.formFieldValidator,
+    this.formKey,
+    this.keyboardType,
+  }) : super(key: key);
 
   final Widget hint;
   final Widget? trailingIcon;
@@ -36,6 +35,7 @@ class _MyFormFieldState extends State<MyFormField> {
   bool showSuffixIcon = false;
   String? text;
   Widget? endIcon;
+  // bool errorShown = false;
 
   @override
   void initState() {
@@ -77,10 +77,13 @@ class _MyFormFieldState extends State<MyFormField> {
           controller: widget.textEditingController,
           obscureText: (widget.isPassword) ? hidePassword : false,
           onChanged: (str) {
-            context.read<LoginFormStatus>().checkLoginFormStatus(widget.formKey!);
+            context
+                .read<LoginFormStatus>()
+                .checkLoginFormStatus(widget.formKey!);
             if (str.trim() == "") {
               endIcon = null;
               text = null;
+              // errorShown = true;
             } else {
               text = str;
               if (widget.formFieldValidator(str) == null) {
@@ -90,9 +93,9 @@ class _MyFormFieldState extends State<MyFormField> {
                     Icons.check_circle,
                     color: AppColors.success,
                   );
+                  // errorShown = false;
                 });
                 //update the email part of the form.
-
               } else {
                 setState(() {
                   showSuffixIcon = false;
@@ -101,10 +104,21 @@ class _MyFormFieldState extends State<MyFormField> {
                     color: Colors.red,
                   );
                 });
+                // errorShown = true;
               }
             }
           },
           decoration: InputDecoration(
+              // errorText: null,
+              // errorBorder: OutlineInputBorder(
+              //     borderSide: BorderSide.none,
+              //     borderRadius: BorderRadius.circular(12)),
+              // errorStyle: TextStyle(
+              //   height: 0
+              // // errorStyle: TextStyle(),
+              // ),
+              // focusedErrorBorder: InputBorder.none,
+              // errorMaxLines: null,
               fillColor: AppColors.gray07,
               filled: true,
               suffixIcon: (widget.isPassword)
@@ -119,11 +133,13 @@ class _MyFormFieldState extends State<MyFormField> {
                           : const Icon(Icons.visibility),
                     )
                   : endIcon,
+
               border: OutlineInputBorder(
                   borderSide: BorderSide.none,
                   borderRadius: BorderRadius.circular(12))),
         ),
-        Positioned.fill(
+        Positioned(
+          top: 20,
           child: Visibility(
             visible: showHint,
             child: GestureDetector(
@@ -135,12 +151,10 @@ class _MyFormFieldState extends State<MyFormField> {
                   focusNode.requestFocus();
                 }
               },
-              child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: widget.hint,
-                  )),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0,),
+                child: widget.hint,
+              ),
             ),
           ),
         ),

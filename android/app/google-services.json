@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "522677432",
+    "project_id": "dummy-ecommerce-app",
+    "storage_bucket": "dummy-ecommerce-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:522677432:android:d577334fd8bd638fd7d84d",
+        "android_client_info": {
+          "package_name": "com.thepocketmerlin.ecommerce_dummy_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "522677432-fq1ltu6n11nqdi3q00ua1tr5r5iosb5n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEu1LqX4y5DAqLgj3u5wLaLZrVwPHQ290"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "522677432-fq1ltu6n11nqdi3q00ua1tr5r5iosb5n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

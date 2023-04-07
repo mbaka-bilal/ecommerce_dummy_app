@@ -13,4 +13,6 @@ class AppImages {
   static const mailPng = "${basePath}mail.png";
   static const ghuxt = "${basePath}ghuxt.svg";
   static const ghuxtPng = "${basePath}ghuxt.png";
+  static const successPng = "${basePath}success.png";
+  static const errorPng = "${basePath}error.png";
 }
