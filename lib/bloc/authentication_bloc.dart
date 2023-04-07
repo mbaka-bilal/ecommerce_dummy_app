@@ -49,12 +49,19 @@ class AuthenticationBloc
         }
         break;
       case AuthenticationStatus.unKnown:
-        return emit(AuthenticationState.unKnown());
-      case AuthenticationStatus.loginIn:
-        // TODO: Handle this case.
+        emit(AuthenticationState.unKnown());
+        break;
+      case AuthenticationStatus.loginInProgress:
+        emit (AuthenticationState.loginInProgress(event.status.statusMessage!));
+        break;
+      case AuthenticationStatus.loginSuccessfully:
+        emit (AuthenticationState.loginSuccessfully(event.status.statusMessage!));
+        break;
+      case AuthenticationStatus.loginError:
+        emit (AuthenticationState.loginError(event.status.statusMessage!));
         break;
       case AuthenticationStatus.signingUpInProgress:
-        emit(AuthenticationState.signingUpInProgress("Creating your account...."));
+        emit(AuthenticationState.signingUpInProgress(event.status.statusMessage!));
         break;
       case AuthenticationStatus.signUpSuccessfully:
         emit(AuthenticationState.signUpSuccessfully(
@@ -64,16 +71,7 @@ class AuthenticationBloc
         emit(AuthenticationState.signUpError(
             event.status.statusMessage!));
         break;
-        case AuthenticationStatus.loginError:
-        // TODO: Handle this case.
-        break;
 
-      case AuthenticationStatus.forgotPasswordError:
-        // TODO: Handle this case.
-        break;
-      case AuthenticationStatus.resettingPassword:
-        // TODO: Handle this case.
-        break;
     }
   }
 

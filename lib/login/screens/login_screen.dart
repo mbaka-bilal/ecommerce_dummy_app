@@ -1,3 +1,4 @@
+import 'package:ecommerce_dummy_app/bloc/authentication_event.dart';
 import 'package:ecommerce_dummy_app/forgot_password/screens/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,11 @@ import '../../../utils/appstyles.dart';
 import '../../../utils/validator.dart';
 import '../../../widgets/my_form.dart';
 import '../../../widgets/mybutton.dart';
+import '../../bloc/authentication_bloc.dart';
+import '../../bloc/authentication_state.dart';
+import '../../models/authentication_model.dart';
+import '../../repositories/authentication_respository.dart';
+import '../../widgets/my_alert_dialog.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -72,185 +78,228 @@ class LoginScreen extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Form(
-                    key: formKey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Email",
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const SizedBox(
-                          height: mediumSpace,
-                        ),
-                        MyFormField(
-                          formKey: formKey,
-                          formFieldValidator: FormValidator.validateEmail,
-                          textEditingController: emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          isPassword: false,
-                          hint: Text("jessicamaria@infomail.com",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(color: Colors.grey)),
-                        ),
-                        const SizedBox(
-                          height: mediumSpace,
-                        ),
-                        Text(
-                          "Password",
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const SizedBox(
-                          height: mediumSpace,
-                        ),
-                        MyFormField(
-                          formKey: formKey,
-                          formFieldValidator: FormValidator.validatePassword,
-                          isPassword: true,
-                          keyboardType: TextInputType.name,
-                          textEditingController: passwordController,
-                          hint: Row(
-                            children: List.generate(
-                                10,
-                                (index) => const Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 3.0),
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.grey,
-                                        radius: 5,
-                                      ),
-                                    )),
+              child: BlocListener<AuthenticationBloc,AuthenticationState>(
+                listener: (context,state) {
+                  switch (state.authenticationModel.authenticationStatus){
+                    case AuthenticationStatus.loginInProgress:
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) {
+                            return MyAlertDialog(
+                                enableBackButton: false,
+                                widget: const CircularProgressIndicator(),
+                                text: state.authenticationModel.statusMessage!);
+                          });
+                      break;
+                    case AuthenticationStatus.loginSuccessfully:
+                      Navigator.of(context).pop();
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) {
+                            return MyAlertDialog(
+                                enableBackButton: false,
+                                widget: Image.asset(AppImages.successPng),
+                                text: state.authenticationModel.statusMessage!);
+                          });
+                      break;
+                    case AuthenticationStatus.loginError:
+                      Navigator.of(context).pop();
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) {
+                            return MyAlertDialog(
+                                enableBackButton: true,
+                                widget: Image.asset(AppImages.errorPng),
+                                text: state.authenticationModel.statusMessage!);
+                          });
+                      break;
+
+                  }
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Form(
+                      key: formKey,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Email",
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                                onPressed: () {
-                                  context.read<LoginFormStatus>().reset();
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ForgotPasswordScreen()));
-                                },
+                          const SizedBox(
+                            height: mediumSpace,
+                          ),
+                          MyFormField(
+                            formKey: formKey,
+                            formFieldValidator: FormValidator.validateEmail,
+                            textEditingController: emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            isPassword: false,
+                            hint: Text("jessicamaria@infomail.com",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(color: Colors.grey)),
+                          ),
+                          const SizedBox(
+                            height: mediumSpace,
+                          ),
+                          Text(
+                            "Password",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          const SizedBox(
+                            height: mediumSpace,
+                          ),
+                          MyFormField(
+                            formKey: formKey,
+                            formFieldValidator: FormValidator.validatePassword,
+                            isPassword: true,
+                            keyboardType: TextInputType.name,
+                            textEditingController: passwordController,
+                            hint: Row(
+                              children: List.generate(
+                                  10,
+                                  (index) => const Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(horizontal: 3.0),
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.grey,
+                                          radius: 5,
+                                        ),
+                                      )),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                  onPressed: () {
+                                    context.read<LoginFormStatus>().reset();
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ForgotPasswordScreen()));
+                                  },
+                                  child: Text(
+                                    "Forgot password ?",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(color: Colors.grey),
+                                  ))
+                            ],
+                          ),
+                          const SizedBox(
+                            height: mediumSpace,
+                          ),
+                          BlocBuilder<LoginFormStatus, bool>(
+                            builder: (context, state) => MyButton(
+                              text: "Sign in",
+                              height: 50,
+                              width: double.infinity,
+                              function: (state)
+                                  ? () {
+                                RepositoryProvider.of<AuthenticationRepository>(
+                                    context)
+                                    .signInEmailAndPassword(
+                                    email: emailController.text.trim(),
+                                    password:
+                                    passwordController.text.trim());
+                                    }
+                                  : null,
+                              buttonColor: AppColors.blue,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: mediumSpace,
+                          ),
+                          Row(
+                            children: [
+                              const Expanded(
+                                child: Divider(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: mediumSpace),
                                 child: Text(
-                                  "Forgot password ?",
+                                  "Or sign in with",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall!
                                       .copyWith(color: Colors.grey),
-                                ))
-                          ],
-                        ),
-                        const SizedBox(
-                          height: mediumSpace,
-                        ),
-                        BlocBuilder<LoginFormStatus, bool>(
-                          builder: (context, state) => MyButton(
-                            text: "Sign in",
-                            height: 50,
-                            width: double.infinity,
-                            function: (state)
-                                ? () {
-                                    // print ("button pressed");
-                                    // if (!_formKey.currentState!.validate()){
-                                    //   print ("successfull");
-                                    //   return;
-                                    // }
-                                  }
-                                : null,
-                            buttonColor: AppColors.blue,
+                                ),
+                              ),
+                              const Expanded(
+                                child: Divider(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        const SizedBox(
-                          height: mediumSpace,
-                        ),
-                        Row(
-                          children: [
-                            const Expanded(
-                              child: Divider(
-                                color: Colors.grey,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: mediumSpace),
-                              child: Text(
-                                "Or sign in with",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(color: Colors.grey),
-                              ),
-                            ),
-                            const Expanded(
-                              child: Divider(
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: mediumSpace,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            socialButtons(
-                                leadingIcon:
-                                    SvgPicture.asset(AppImages.faceBook),
-                                socialName: "Facebook",
-                                function: () {}),
-                            socialButtons(
-                                function: () {},
-                                leadingIcon: SvgPicture.asset(AppImages.google),
-                                socialName: "Google"),
-                          ],
-                        ),
-                      ],
+                          const SizedBox(
+                            height: mediumSpace,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              socialButtons(
+                                  leadingIcon:
+                                      SvgPicture.asset(AppImages.faceBook),
+                                  socialName: "Facebook",
+                                  function: () {}),
+                              socialButtons(
+                                  function: () {},
+                                  leadingIcon: SvgPicture.asset(AppImages.google),
+                                  socialName: "Google"),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don't have an account",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: Colors.grey),
-                      ),
-                      const SizedBox(
-                        width: smallSpace,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          context.read<LoginFormStatus>().reset();
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const SignUpScreen()));
-                        },
-                        child: Text(
-                          "Sign Up",
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Don't have an account",
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!
-                              .copyWith(color: AppColors.blue),
+                              .copyWith(color: Colors.grey),
                         ),
-                      )
-                    ],
-                  )
-                ],
+                        const SizedBox(
+                          width: smallSpace,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            context.read<LoginFormStatus>().reset();
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const SignUpScreen()));
+                          },
+                          child: Text(
+                            "Sign Up",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(color: AppColors.blue),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),

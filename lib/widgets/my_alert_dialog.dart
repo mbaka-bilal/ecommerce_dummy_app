@@ -5,18 +5,18 @@ class MyAlertDialog extends StatelessWidget {
     Key? key,
     required this.widget,
     required this.text,
-    // required this.enableBackButton
+    required this.enableBackButton
   }) : super(key: key);
 
   final Widget widget;
   final String text;
 
-  // final bool enableBackButton;
+  final bool enableBackButton;
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => Future.value(false),
+      onWillPop: () => Future.value(enableBackButton),
       child: AlertDialog(
         content: Column(mainAxisSize: MainAxisSize.min, children: [
           widget,

@@ -47,6 +47,26 @@ class AuthenticationState extends Equatable {
           authenticationStatus: AuthenticationStatus.signUpError,
           statusMessage: statusMessage));
 
+  AuthenticationState.loginInProgress(String statusMessage): this._(
+      authenticationModel: AuthenticationModel(authenticationStatus: AuthenticationStatus.loginInProgress,
+        statusMessage: statusMessage,
+      )
+  );
+
+  AuthenticationState.loginSuccessfully(String statusMessage): this._(
+    authenticationModel: AuthenticationModel(authenticationStatus: AuthenticationStatus.loginSuccessfully,
+    statusMessage: statusMessage,
+    )
+  );
+
+  AuthenticationState.loginError(String statusMessage): this._(
+      authenticationModel: AuthenticationModel(authenticationStatus: AuthenticationStatus.loginError,
+        statusMessage: statusMessage,
+      )
+  );
+
+
+
   final AuthenticationModel authenticationModel;
 
   @override

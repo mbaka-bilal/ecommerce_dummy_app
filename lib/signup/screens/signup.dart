@@ -57,6 +57,7 @@ class SignUpScreen extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return MyAlertDialog(
+                        enableBackButton: false,
                         widget: const CircularProgressIndicator(),
                         text: state.authenticationModel.statusMessage!);
                   });
@@ -68,6 +69,7 @@ class SignUpScreen extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return MyAlertDialog(
+                        enableBackButton: false,
                         widget: Image.asset(AppImages.successPng),
                         text: state.authenticationModel.statusMessage!);
                   });
@@ -79,6 +81,7 @@ class SignUpScreen extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return MyAlertDialog(
+                        enableBackButton: true,
                         widget: Image.asset(AppImages.errorPng),
                         text: state.authenticationModel.statusMessage!);
                   });

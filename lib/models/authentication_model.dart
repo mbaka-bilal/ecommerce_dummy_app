@@ -6,6 +6,8 @@ enum AuthenticationStatus {
   authenticated,
   unauthenticated,
   loginIn,
+  loginInProgress,
+  loginSuccessfully,
   signingUpInProgress,
   signUpSuccessfully,
   loginError,
