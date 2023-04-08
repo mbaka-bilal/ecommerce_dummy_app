@@ -59,15 +59,15 @@ class ResetLinkSentScreen extends StatelessWidget {
         const SizedBox(
           height: 20,
         ),
-        TextButton(
-            onPressed: () {},
-            child: Text(
-              "Resend Email",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium!
-                  .copyWith(fontSize: 14, color: AppColors.blue),
-            ))
+        // TextButton(
+        //     onPressed: () {},
+        //     child: Text(
+        //       "Resend Email",
+        //       style: Theme.of(context)
+        //           .textTheme
+        //           .titleMedium!
+        //           .copyWith(fontSize: 14, color: AppColors.blue),
+        //     ))
       ],
     ));
   }

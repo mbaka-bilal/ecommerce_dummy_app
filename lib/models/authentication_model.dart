@@ -5,6 +5,7 @@ enum AuthenticationStatus {
   unKnown,
   authenticated,
   unauthenticated,
+  emailNotVerified,
   loginIn,
   loginInProgress,
   loginSuccessfully,
@@ -12,8 +13,13 @@ enum AuthenticationStatus {
   signUpSuccessfully,
   loginError,
   signUpError,
+  sendingUserConfirmationLink,
+  userConfirmationLinkSent,
+  errorSendingUserConfirmationLink,
   forgotPasswordError,
-  resettingPassword,
+  resettingPasswordInProgress,
+  resettingPasswordSuccessfully,
+  resettingPasswordError,
 }
 
 

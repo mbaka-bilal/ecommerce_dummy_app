@@ -15,6 +15,7 @@ import '../../bloc/authentication_bloc.dart';
 import '../../bloc/authentication_state.dart';
 import '../../models/authentication_model.dart';
 import '../../repositories/authentication_respository.dart';
+import '../../signup/screens/signup_successfull.dart';
 import '../../widgets/my_alert_dialog.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -92,7 +93,9 @@ class LoginScreen extends StatelessWidget {
                                 text: state.authenticationModel.statusMessage!);
                           });
                       break;
+
                     case AuthenticationStatus.loginSuccessfully:
+                      Navigator.of(context).pop();
                       showDialog(
                           barrierDismissible: false,
                           context: context,
@@ -100,13 +103,37 @@ class LoginScreen extends StatelessWidget {
                             return MyAlertDialog(
                                 enableBackButton: false,
                                 widget: Image.asset(AppImages.successPng),
-                                text: state.authenticationModel.statusMessage!);
+                                text: state.authenticationModel.statusMessage!,
+                                function: () {
+                                  //TODO Implement successfull login
+                                },
+                            );
                           });
                       break;
+                    case AuthenticationStatus.emailNotVerified:
+                      Navigator.of(context).pop();
+                      showDialog(
+                          barrierDismissible: true,
+                          context: context,
+                          builder: (context) {
+                            return MyAlertDialog(
+                              enableBackButton: true,
+                              widget: Image.asset(AppImages.errorPng),
+                              text: state.authenticationModel.statusMessage!,
+                              function: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SignUpSuccessfullyScreen()));
+                              },
+                            );
+                          });
+                      break;
+
                     case AuthenticationStatus.loginError:
                       Navigator.of(context).pop();
                       showDialog(
-                          barrierDismissible: false,
+                          barrierDismissible: true,
                           context: context,
                           builder: (context) {
                             return MyAlertDialog(

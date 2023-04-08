@@ -27,13 +27,14 @@ class AuthenticationState extends Equatable {
             authenticationModel: AuthenticationModel(
                 authenticationStatus: AuthenticationStatus.unauthenticated));
 
+  // AuthenticationState.
+
   AuthenticationState.signingUpInProgress(String statusMessage)
       : this._(
             authenticationModel: AuthenticationModel(
-                authenticationStatus:
-                    AuthenticationStatus.signingUpInProgress,
-            statusMessage: statusMessage,
-            ));
+          authenticationStatus: AuthenticationStatus.signingUpInProgress,
+          statusMessage: statusMessage,
+        ));
 
   AuthenticationState.signUpSuccessfully(String statusMessage)
       : this._(
@@ -43,29 +44,83 @@ class AuthenticationState extends Equatable {
 
   AuthenticationState.signUpError(String statusMessage)
       : this._(
-      authenticationModel: AuthenticationModel(
-          authenticationStatus: AuthenticationStatus.signUpError,
-          statusMessage: statusMessage));
+            authenticationModel: AuthenticationModel(
+                authenticationStatus: AuthenticationStatus.signUpError,
+                statusMessage: statusMessage));
 
-  AuthenticationState.loginInProgress(String statusMessage): this._(
-      authenticationModel: AuthenticationModel(authenticationStatus: AuthenticationStatus.loginInProgress,
-        statusMessage: statusMessage,
-      )
-  );
+  AuthenticationState.loginInProgress(String statusMessage)
+      : this._(
+            authenticationModel: AuthenticationModel(
+          authenticationStatus: AuthenticationStatus.loginInProgress,
+          statusMessage: statusMessage,
+        ));
 
-  AuthenticationState.loginSuccessfully(String statusMessage): this._(
-    authenticationModel: AuthenticationModel(authenticationStatus: AuthenticationStatus.loginSuccessfully,
-    statusMessage: statusMessage,
-    )
-  );
+  AuthenticationState.loginSuccessfully(String statusMessage)
+      : this._(
+            authenticationModel: AuthenticationModel(
+          authenticationStatus: AuthenticationStatus.loginSuccessfully,
+          statusMessage: statusMessage,
+        ));
 
-  AuthenticationState.loginError(String statusMessage): this._(
-      authenticationModel: AuthenticationModel(authenticationStatus: AuthenticationStatus.loginError,
-        statusMessage: statusMessage,
-      )
-  );
+  AuthenticationState.loginError(String statusMessage)
+      : this._(
+            authenticationModel: AuthenticationModel(
+          authenticationStatus: AuthenticationStatus.loginError,
+          statusMessage: statusMessage,
+        ));
 
+  AuthenticationState.sendingUserConfirmationLink(String statusMessage)
+      : this._(
+            authenticationModel: AuthenticationModel(
+          authenticationStatus:
+              AuthenticationStatus.sendingUserConfirmationLink,
+          statusMessage: statusMessage,
+        ));
 
+  AuthenticationState.userConfirmationLinkSent(String statusMessage)
+      : this._(
+            authenticationModel: AuthenticationModel(
+          authenticationStatus: AuthenticationStatus.userConfirmationLinkSent,
+              statusMessage: statusMessage,
+        ));
+
+  AuthenticationState.errorSendingUserConfirmationLink(String statusMessage)
+      : this._(
+            authenticationModel: AuthenticationModel(
+          authenticationStatus:
+              AuthenticationStatus.errorSendingUserConfirmationLink,
+          statusMessage: statusMessage,
+        ));
+
+  AuthenticationState.emailNotVerified(String statusMessage)
+      : this._(
+            authenticationModel: AuthenticationModel(
+          authenticationStatus: AuthenticationStatus.emailNotVerified,
+          statusMessage: statusMessage,
+        ));
+
+  AuthenticationState.resettingPasswordInProgress(String statusMessage)
+      : this._(
+            authenticationModel: AuthenticationModel(
+          authenticationStatus:
+              AuthenticationStatus.resettingPasswordInProgress,
+          statusMessage: statusMessage,
+        ));
+
+  AuthenticationState.resettingPasswordSuccessfully(String statusMessage)
+      : this._(
+            authenticationModel: AuthenticationModel(
+                authenticationStatus:
+                    AuthenticationStatus.resettingPasswordSuccessfully,
+            statusMessage: statusMessage,
+            ));
+
+  AuthenticationState.resettingPasswordError(String statusMessage)
+      : this._(
+            authenticationModel: AuthenticationModel(
+          authenticationStatus: AuthenticationStatus.resettingPasswordError,
+          statusMessage: statusMessage,
+        ));
 
   final AuthenticationModel authenticationModel;
 

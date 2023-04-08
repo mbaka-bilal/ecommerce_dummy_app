@@ -13,6 +13,7 @@ import '../../models/authentication_model.dart';
 import '../../repositories/authentication_respository.dart';
 import '../../utils/app_images.dart';
 import '../../widgets/my_alert_dialog.dart';
+import 'signup_successfull.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -69,15 +70,22 @@ class SignUpScreen extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return MyAlertDialog(
-                        enableBackButton: false,
-                        widget: Image.asset(AppImages.successPng),
-                        text: state.authenticationModel.statusMessage!);
+                      enableBackButton: false,
+                      widget: Image.asset(AppImages.successPng),
+                      text: state.authenticationModel.statusMessage!,
+                      function: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                const SignUpSuccessfullyScreen()));
+                      },
+                    );
                   });
               break;
             case AuthenticationStatus.signUpError:
               Navigator.of(context).pop();
               showDialog(
-                  barrierDismissible: false,
+                  barrierDismissible: true,
                   context: context,
                   builder: (context) {
                     return MyAlertDialog(

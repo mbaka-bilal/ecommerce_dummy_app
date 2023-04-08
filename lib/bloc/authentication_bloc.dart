@@ -10,7 +10,6 @@ import '../models/user_model.dart';
 import '../repositories/authentication_respository.dart';
 import '../repositories/user_repository.dart';
 
-
 class AuthenticationBloc
     extends bloc.Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({
@@ -52,24 +51,56 @@ class AuthenticationBloc
         emit(AuthenticationState.unKnown());
         break;
       case AuthenticationStatus.loginInProgress:
-        emit (AuthenticationState.loginInProgress(event.status.statusMessage!));
+        emit(AuthenticationState.loginInProgress(event.status.statusMessage!));
         break;
       case AuthenticationStatus.loginSuccessfully:
-        emit (AuthenticationState.loginSuccessfully(event.status.statusMessage!));
+        emit(
+            AuthenticationState.loginSuccessfully(event.status.statusMessage!));
         break;
       case AuthenticationStatus.loginError:
-        emit (AuthenticationState.loginError(event.status.statusMessage!));
+        emit(AuthenticationState.loginError(event.status.statusMessage!));
         break;
       case AuthenticationStatus.signingUpInProgress:
-        emit(AuthenticationState.signingUpInProgress(event.status.statusMessage!));
+        emit(AuthenticationState.signingUpInProgress(
+            event.status.statusMessage!));
         break;
       case AuthenticationStatus.signUpSuccessfully:
         emit(AuthenticationState.signUpSuccessfully(
             event.status.statusMessage!));
         break;
       case AuthenticationStatus.signUpError:
-        emit(AuthenticationState.signUpError(
+        emit(AuthenticationState.signUpError(event.status.statusMessage!));
+        break;
+      case AuthenticationStatus.sendingUserConfirmationLink:
+        emit(AuthenticationState.sendingUserConfirmationLink(
             event.status.statusMessage!));
+        break;
+      case AuthenticationStatus.userConfirmationLinkSent:
+        emit(AuthenticationState.userConfirmationLinkSent(
+          event.status.statusMessage!,
+        ));
+        break;
+      case AuthenticationStatus.errorSendingUserConfirmationLink:
+        emit(AuthenticationState.errorSendingUserConfirmationLink(
+            event.status.statusMessage!));
+        break;
+      case AuthenticationStatus.emailNotVerified:
+        emit(AuthenticationState.emailNotVerified(event.status.statusMessage!));
+        break;
+      case AuthenticationStatus.resettingPasswordInProgress:
+        emit(AuthenticationState.resettingPasswordInProgress(
+          event.status.statusMessage!,
+        ));
+        break;
+      case AuthenticationStatus.resettingPasswordSuccessfully:
+        emit(AuthenticationState.resettingPasswordSuccessfully(
+          event.status.statusMessage!,
+        ));
+        break;
+      case AuthenticationStatus.resettingPasswordError:
+        emit(AuthenticationState.resettingPasswordError(
+          event.status.statusMessage!,
+        ));
         break;
 
     }
@@ -79,7 +110,7 @@ class AuthenticationBloc
     AuthenticationLogoutRequested event,
     bloc.Emitter<AuthenticationState> emit,
   ) {
-    // _authenticationRepository.logOut();
+    _authenticationRepository.logOut();
   }
 
   Future<User?> _tryGetUser() async {
