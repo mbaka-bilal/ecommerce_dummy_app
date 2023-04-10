@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../models/authentication_model.dart';
+import 'user_repository.dart';
 // import '../models/user_model.dart' as user_model;
 
 class AuthenticationRepository {
@@ -16,6 +17,15 @@ class AuthenticationRepository {
         authenticationStatus: AuthenticationStatus.unKnown);
     yield* _controller.stream;
   }
+
+  // Future<User?> _tryGetUser() async {
+  //   try {
+  //     final user = await _userRepository.getUser();
+  //     return user;
+  //   } catch (_) {
+  //     return null;
+  //   }
+  // }
 
   Future<void> signInWithGoogle() async {
     try {
@@ -175,10 +185,9 @@ class AuthenticationRepository {
       await Future.delayed(
           const Duration(milliseconds: 300),
           () => _controller.add(AuthenticationModel(
-                authenticationStatus:
-                    AuthenticationStatus.userConfirmationLinkSent,
-            statusMessage: "Success"
-              )));
+              authenticationStatus:
+                  AuthenticationStatus.userConfirmationLinkSent,
+              statusMessage: "Success")));
     } on FirebaseAuthException catch (e) {
       print("error sending the link to email $e");
       switch (e.code) {
@@ -223,43 +232,42 @@ class AuthenticationRepository {
       print("begin resetting password");
       await Future.delayed(
           const Duration(milliseconds: 300),
-              () => _controller.add(AuthenticationModel(
+          () => _controller.add(AuthenticationModel(
               authenticationStatus:
-              AuthenticationStatus.resettingPasswordInProgress,
+                  AuthenticationStatus.resettingPasswordInProgress,
               statusMessage: "resetting password...")));
       await _fAuth.sendPasswordResetEmail(email: email.trim());
       await Future.delayed(
           const Duration(milliseconds: 300),
-              () => _controller.add(AuthenticationModel(
+          () => _controller.add(AuthenticationModel(
               authenticationStatus:
-              AuthenticationStatus.resettingPasswordSuccessfully,
-              statusMessage: "Success"
-          )));
+                  AuthenticationStatus.resettingPasswordSuccessfully,
+              statusMessage: "Success")));
     } on FirebaseAuthException catch (e) {
       print("error resetting password $e");
       switch (e.code) {
         case 'too-many-requests':
           await Future.delayed(
               const Duration(milliseconds: 300),
-                  () => _controller.add(AuthenticationModel(
+              () => _controller.add(AuthenticationModel(
                   authenticationStatus:
-                  AuthenticationStatus.resettingPasswordError,
+                      AuthenticationStatus.resettingPasswordError,
                   statusMessage: "Too many requests, try again later")));
           break;
         case 'network-request-failed':
           await Future.delayed(
               const Duration(milliseconds: 300),
-                  () => _controller.add(AuthenticationModel(
+              () => _controller.add(AuthenticationModel(
                   authenticationStatus:
-                  AuthenticationStatus.resettingPasswordError,
+                      AuthenticationStatus.resettingPasswordError,
                   statusMessage: "No internet connection")));
           break;
         default:
           await Future.delayed(
               const Duration(milliseconds: 300),
-                  () => _controller.add(AuthenticationModel(
+              () => _controller.add(AuthenticationModel(
                   authenticationStatus:
-                  AuthenticationStatus.resettingPasswordError,
+                      AuthenticationStatus.resettingPasswordError,
                   statusMessage: "Unknown error")));
           break;
       }
@@ -267,9 +275,8 @@ class AuthenticationRepository {
       print("uncaught error when reseting password $e");
       await Future.delayed(
           const Duration(milliseconds: 300),
-              () => _controller.add(AuthenticationModel(
-              authenticationStatus:
-              AuthenticationStatus.resettingPasswordError,
+          () => _controller.add(AuthenticationModel(
+              authenticationStatus: AuthenticationStatus.resettingPasswordError,
               statusMessage: "Unknown error")));
     }
   }
@@ -289,6 +296,36 @@ class AuthenticationRepository {
           const Duration(milliseconds: 300),
           () => _controller.add(AuthenticationModel(
                 authenticationStatus: AuthenticationStatus.unKnown,
+              )));
+    }
+  }
+
+  Future<void> tryGetUser() async {
+    try {
+      // print("checking if user is authenticated");
+      final User? user =  _fAuth.currentUser;
+      if (user == null) {
+        // print ("not user exists");
+        await Future.delayed(
+            const Duration(milliseconds: 300),
+            () => _controller.add(AuthenticationModel(
+                  authenticationStatus: AuthenticationStatus.unauthenticated,
+                  statusMessage: "",
+                )));
+      } else {
+        // print ("user exists");
+        await Future.delayed(
+            const Duration(milliseconds: 300),
+            () => _controller.add(AuthenticationModel(
+                  authenticationStatus: AuthenticationStatus.authenticated,
+                )));
+      }
+    } catch (e) {
+      // print("checking if user is authenticated error $e");
+      await Future.delayed(
+          const Duration(milliseconds: 300),
+          () => _controller.add(AuthenticationModel(
+                authenticationStatus: AuthenticationStatus.unauthenticated,
               )));
     }
   }

@@ -16,7 +16,7 @@ class AuthenticationBloc
     required AuthenticationRepository authenticationRepository,
     required UserRepository userRepository,
   })  : _authenticationRepository = authenticationRepository,
-        _userRepository = userRepository,
+        // _userRepository = userRepository,
         super(AuthenticationState.unKnown()) {
     on<AuthenticationStatusChanged>(_onAuthenticationStatusChanged);
     on<AuthenticationLogoutRequested>(_onAuthenticationLogoutRequested);
@@ -38,14 +38,16 @@ class AuthenticationBloc
   ) async {
     switch (event.status.authenticationStatus) {
       case AuthenticationStatus.unauthenticated:
-        return emit(AuthenticationState.unAuthenticated());
+        emit(AuthenticationState.unAuthenticated());
+        break;
       case AuthenticationStatus.authenticated:
-        final user = await _tryGetUser();
-        if (user == null) {
-          emit(AuthenticationState.unAuthenticated());
-        } else {
-          emit(AuthenticationState.authenticated(user, "Login Successful"));
-        }
+        emit (AuthenticationState.authenticated());
+        // final user = await _tryGetUser();
+        // if (user == null) {
+        //   emit(AuthenticationState.unAuthenticated());
+        // } else {
+        //   emit(AuthenticationState.authenticated(user, "Login Successful"));
+        // }
         break;
       case AuthenticationStatus.unKnown:
         emit(AuthenticationState.unKnown());
@@ -102,7 +104,6 @@ class AuthenticationBloc
           event.status.statusMessage!,
         ));
         break;
-
     }
   }
 
@@ -113,17 +114,10 @@ class AuthenticationBloc
     _authenticationRepository.logOut();
   }
 
-  Future<User?> _tryGetUser() async {
-    try {
-      final user = await _userRepository.getUser();
-      return user;
-    } catch (_) {
-      return null;
-    }
-  }
+
 
   final AuthenticationRepository _authenticationRepository;
-  final UserRepository _userRepository;
+  // final UserRepository _userRepository;
   late StreamSubscription<AuthenticationModel>
       _authenticationStatusSubscription;
 }

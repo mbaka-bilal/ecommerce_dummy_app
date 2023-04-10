@@ -30,9 +30,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // context.read<AuthenticationBloc>().add(const AuthenticationStatusChanged(
-    //     AuthenticationModel(authenticationStatus: AuthenticationStatus.unauthenticated)));
-    nextScreen(OnBoardingScreen());
+    // context.read<AuthenticationBloc>().add(AuthenticationStatusChanged(
+    //     AuthenticationModel(authenticationStatus: AuthenticationStatus.authenticated)));
+    // nextScreen(OnBoardingScreen());
+
+    RepositoryProvider.of<
+        AuthenticationRepository>(context).tryGetUser();
   }
 
   @override
@@ -42,29 +45,29 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: AppColors.blue,
       body:
-      // BlocListener<AuthenticationBloc, AuthenticationState>(
-      //   // bloc: authenticationBloc,
-      //   listener: (context, state) {
-      //     print("listening on spash page");
-      //     switch (state.status) {
-      //       case AuthenticationStatus.authenticated:
-      //         // print("you are authenticated");
-      //         nextScreen(Placeholder());
-      //         // return;
-      //         break;
-      //       case AuthenticationStatus.unauthenticated:
-      //         // print("you are not authenticated");
-      //         nextScreen(OnBoardingScreen());
-      //         // return;
-      //         break;
-      //       case AuthenticationStatus.unKnown:
-      //         // print("you are not authenticated state unknown");
-      //         nextScreen(OnBoardingScreen());
-      //         // return;
-      //         break;
-      //     }
-      //   },
-      //   child:
+      BlocListener<AuthenticationBloc, AuthenticationState>(
+        // bloc: authenticationBloc,
+        listener: (context, state) {
+          // print("listening on spash page");
+          switch (state.authenticationModel.authenticationStatus) {
+            case AuthenticationStatus.authenticated:
+              // print("you are authenticated");
+              nextScreen(Placeholder());
+              // return;
+              break;
+            case AuthenticationStatus.unauthenticated:
+              // print("you are not authenticated");
+              nextScreen(OnBoardingScreen());
+              // return;
+              break;
+            case AuthenticationStatus.unKnown:
+              // print("you are not authenticated state unknown");
+              nextScreen(OnBoardingScreen());
+              // return;
+              break;
+          }
+        },
+        child:
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,7 +83,7 @@ class _SplashScreenState extends State<SplashScreen> {
             SvgPicture.asset(AppImages.eshopLogo),
           ],
         ),
-      // ),
+      ),
     );
   }
 }

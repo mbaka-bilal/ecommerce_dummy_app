@@ -13,12 +13,11 @@ class AuthenticationState extends Equatable {
             authenticationModel: AuthenticationModel(
                 authenticationStatus: AuthenticationStatus.unKnown));
 
-  AuthenticationState.authenticated(User user, String statusMessage)
+  AuthenticationState.authenticated()
       : this._(
           authenticationModel: AuthenticationModel(
             authenticationStatus: AuthenticationStatus.authenticated,
-            user: user,
-            statusMessage: statusMessage,
+
           ),
         );
 
