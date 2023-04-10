@@ -15,4 +15,6 @@ class AppImages {
   static const ghuxtPng = "${basePath}ghuxt.png";
   static const successPng = "${basePath}success.png";
   static const errorPng = "${basePath}error.png";
+  static const defaultProfilePic = "${basePath}default_profile.svg";
+  static const defaultProfilePicPng = "${basePath}default_profile.png";
 }

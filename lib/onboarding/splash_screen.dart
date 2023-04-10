@@ -1,15 +1,18 @@
-import 'package:ecommerce_dummy_app/bloc/authentication_bloc.dart';
-import 'package:ecommerce_dummy_app/bloc/authentication_event.dart';
-import 'package:ecommerce_dummy_app/repositories/authentication_respository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../bloc/authentication_bloc.dart';
+import '../bloc/authentication_state.dart';
+import '../models/authentication_model.dart';
+import '../profile/screens/user_profile.dart';
+import '../repositories/authentication_respository.dart';
+
 import '../../onboarding/onboarding_screen.dart';
 import '../../utils/app_images.dart';
 import '../../utils/appstyles.dart';
-import '../bloc/authentication_state.dart';
-import '../models/authentication_model.dart';
+
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -52,17 +55,17 @@ class _SplashScreenState extends State<SplashScreen> {
           switch (state.authenticationModel.authenticationStatus) {
             case AuthenticationStatus.authenticated:
               // print("you are authenticated");
-              nextScreen(Placeholder());
+              nextScreen(const UserProfile());
               // return;
               break;
             case AuthenticationStatus.unauthenticated:
               // print("you are not authenticated");
-              nextScreen(OnBoardingScreen());
+              nextScreen(const OnBoardingScreen());
               // return;
               break;
             case AuthenticationStatus.unKnown:
               // print("you are not authenticated state unknown");
-              nextScreen(OnBoardingScreen());
+              nextScreen(const OnBoardingScreen());
               // return;
               break;
           }
