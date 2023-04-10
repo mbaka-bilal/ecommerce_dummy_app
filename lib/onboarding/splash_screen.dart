@@ -1,3 +1,4 @@
+import 'package:ecommerce_dummy_app/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -39,6 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     RepositoryProvider.of<
         AuthenticationRepository>(context).tryGetUser();
+
   }
 
   @override
@@ -55,6 +57,8 @@ class _SplashScreenState extends State<SplashScreen> {
           switch (state.authenticationModel.authenticationStatus) {
             case AuthenticationStatus.authenticated:
               // print("you are authenticated");
+              RepositoryProvider.of<
+                  UserRepository>(context).fetchUser();
               nextScreen(const UserProfile());
               // return;
               break;

@@ -1,13 +1,18 @@
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-// import 'package:'
 
 class User extends Equatable {
-  const User(this.id);
+  const User(this.firstName, this.lastName, this.email,this.uid);
 
-  final  id;
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String uid;
+
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [firstName,lastName,email,uid];
 
-  static const empty = User('-');
+  static const empty = User("", "", "","");
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ecommerce_dummy_app/repositories/database_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -10,6 +11,7 @@ import 'user_repository.dart';
 class AuthenticationRepository {
   final _controller = StreamController<AuthenticationModel>();
   final _fAuth = FirebaseAuth.instance;
+  final _databaseRepository = DatabaseRepository();
 
   Stream<AuthenticationModel> get status async* {
     await Future<void>.delayed(const Duration(seconds: 1));
@@ -63,6 +65,7 @@ class AuthenticationRepository {
     try {
       final user = await _fAuth.signInWithEmailAndPassword(
           email: email, password: password);
+
       if (user.user!.emailVerified) {
         await Future.delayed(
             const Duration(milliseconds: 300),
@@ -122,6 +125,8 @@ class AuthenticationRepository {
   Future<void> signUpEmailAndPassword({
     required String email,
     required String password,
+    required String firstName,
+    required String lastName,
   }) async {
     _controller.add(AuthenticationModel(
       authenticationStatus: AuthenticationStatus.signingUpInProgress,
@@ -132,6 +137,7 @@ class AuthenticationRepository {
 
       await _fAuth.createUserWithEmailAndPassword(
           email: email, password: password);
+      await _databaseRepository.createUser(firstName, lastName);
       await Future.delayed(
           const Duration(milliseconds: 300),
           () => _controller.add(AuthenticationModel(
@@ -290,6 +296,7 @@ class AuthenticationRepository {
           () => _controller.add(AuthenticationModel(
                 authenticationStatus: AuthenticationStatus.unauthenticated,
               )));
+
     } catch (e) {
       print("unable to sign out user $e");
       await Future.delayed(

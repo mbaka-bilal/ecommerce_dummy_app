@@ -223,9 +223,11 @@ class SignUpScreen extends StatelessWidget {
                                 RepositoryProvider.of<AuthenticationRepository>(
                                         context)
                                     .signUpEmailAndPassword(
-                                        email: emailController.text.trim(),
-                                        password:
-                                            passwordController.text.trim());
+                                  email: emailController.text.trim(),
+                                  password: passwordController.text.trim(),
+                                  firstName: firstNameController.text.trim(),
+                                  lastName: lastNameController.text.trim(),
+                                );
                               }
                             : null,
                         buttonColor: AppColors.blue,

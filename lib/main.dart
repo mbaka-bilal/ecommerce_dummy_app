@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bloc/authentication_bloc.dart';
 import 'bloc/form_state_cubit.dart';
+import 'bloc/user_info_bloc.dart';
 import 'firebase_options.dart';
 import 'onboarding/splash_screen.dart';
 import 'utils/appstyles.dart';
@@ -19,7 +20,7 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}): super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -44,8 +45,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: _authenticationRepository,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider.value(
+          value: _authenticationRepository,
+        ),
+        RepositoryProvider.value(
+          value: _userRepository,
+        ),
+      ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthenticationBloc>(
@@ -56,6 +64,9 @@ class _MyAppState extends State<MyApp> {
           ),
           BlocProvider<LoginFormStatus>(
             create: (context) => LoginFormStatus(),
+          ),
+          BlocProvider<UserInfoBloc>(
+            create: (context) => UserInfoBloc(userRepository: _userRepository),
           ),
         ],
         child: const Home(),

@@ -14,7 +14,9 @@ import '../../../widgets/mybutton.dart';
 import '../../bloc/authentication_bloc.dart';
 import '../../bloc/authentication_state.dart';
 import '../../models/authentication_model.dart';
+import '../../profile/screens/user_profile.dart';
 import '../../repositories/authentication_respository.dart';
+import '../../repositories/user_repository.dart';
 import '../../signup/screens/signup_successfull.dart';
 import '../../widgets/my_alert_dialog.dart';
 
@@ -101,12 +103,19 @@ class LoginScreen extends StatelessWidget {
                           context: context,
                           builder: (context) {
                             return MyAlertDialog(
-                                enableBackButton: false,
-                                widget: Image.asset(AppImages.successPng),
-                                text: state.authenticationModel.statusMessage!,
-                                function: () {
-                                  //TODO Implement successfull login
-                                },
+                              enableBackButton: false,
+                              widget: Image.asset(AppImages.successPng),
+                              text: state.authenticationModel.statusMessage!,
+                              function: () {
+                                Navigator.of(context).pop();
+                                RepositoryProvider.of<UserRepository>(context)
+                                    .fetchUser();
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const UserProfile()),
+                                    (route) => false);
+                              },
                             );
                           });
                       break;
