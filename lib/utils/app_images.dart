@@ -1,7 +1,6 @@
 class AppImages {
   static const basePath = "assets/images/";
 
-
   static const logo = "${basePath}icon.svg";
   static const eshopLogo = "${basePath}eshop.svg";
   static const firstOnBoardingImage = "${basePath}onboarding_one.svg";
@@ -17,4 +16,10 @@ class AppImages {
   static const errorPng = "${basePath}error.png";
   static const defaultProfilePic = "${basePath}default_profile.svg";
   static const defaultProfilePicPng = "${basePath}default_profile.png";
+  static const menu = "${basePath}menu.svg";
+  static const shoppingBag = "${basePath}shopping_bag.svg";
+  static const notificationsBell = "${basePath}notifications_bell.svg";
+  static const person = "${basePath}person.svg";
+  static const clothes = "${basePath}clothes.svg";
+  static const faceMask = "${basePath}face_mask.svg";
 }

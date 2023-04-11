@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../bloc/authentication_bloc.dart';
 import '../bloc/authentication_state.dart';
+import '../dashboard/screens/dashboard.dart';
 import '../models/authentication_model.dart';
 import '../profile/screens/user_profile.dart';
 import '../repositories/authentication_respository.dart';
@@ -59,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
               // print("you are authenticated");
               RepositoryProvider.of<
                   UserRepository>(context).fetchUser();
-              nextScreen(const UserProfile());
+              nextScreen(const DashBoard());
               // return;
               break;
             case AuthenticationStatus.unauthenticated:

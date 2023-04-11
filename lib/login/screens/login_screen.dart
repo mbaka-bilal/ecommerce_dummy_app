@@ -13,6 +13,7 @@ import '../../../widgets/my_form.dart';
 import '../../../widgets/mybutton.dart';
 import '../../bloc/authentication_bloc.dart';
 import '../../bloc/authentication_state.dart';
+import '../../dashboard/screens/dashboard.dart';
 import '../../models/authentication_model.dart';
 import '../../profile/screens/user_profile.dart';
 import '../../repositories/authentication_respository.dart';
@@ -113,7 +114,7 @@ class LoginScreen extends StatelessWidget {
                                 Navigator.of(context).pushAndRemoveUntil(
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const UserProfile()),
+                                            const DashBoard()),
                                     (route) => false);
                               },
                             );
