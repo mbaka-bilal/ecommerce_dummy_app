@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -5,13 +6,15 @@ import '../../utils/app_images.dart';
 import '../../utils/appstyles.dart';
 
 class CategoryCard extends StatelessWidget {
-  const CategoryCard({Key? key, required this.title}) : super(key: key);
+  const CategoryCard({Key? key, required this.title, required this.imageUrl}) : super(key: key);
 
   final String title;
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10),
       decoration:  const BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -24,12 +27,16 @@ class CategoryCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-              margin: const EdgeInsets.all(10),
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12), color: Colors.white),
-              child: SvgPicture.asset(AppImages.faceBook)),
+          Expanded(
+            child: Container(
+                margin: const EdgeInsets.only(top: 10,),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12), color: Colors.white),
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                )),
+          ),
           Text(
             title,
             style: Theme.of(context)

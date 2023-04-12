@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -6,10 +7,11 @@ import '../../utils/appstyles.dart';
 
 class PopularItemCard extends StatelessWidget {
   ///Widget to display the popular items
-  const PopularItemCard({Key? key, required this.itemName, required this.amount}) : super(key: key);
+  const PopularItemCard({Key? key, required this.itemName, required this.amount, required this.imageUrl}) : super(key: key);
 
   final String itemName;
   final int amount;
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,9 @@ class PopularItemCard extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: AppColors.gray07,
                       borderRadius: BorderRadius.circular(10)),
-                  child: SvgPicture.asset(AppImages.faceBook),
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                  ),
                 ),
                 const SizedBox(
                   width: 10,
@@ -41,7 +45,7 @@ class PopularItemCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(itemName),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     Text("\$$amount")

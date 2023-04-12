@@ -1,10 +1,12 @@
-import 'package:ecommerce_dummy_app/home/widgets/like_item_display.dart';
-import 'package:ecommerce_dummy_app/home/widgets/popular_item_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../home/widgets/like_item_display.dart';
+import '../../home/widgets/popular_item_card.dart';
+import '../../models/product_model.dart';
+import '../../repositories/database_repository.dart';
 import '../../utils/app_images.dart';
 import '../../utils/appstyles.dart';
+
 import '../widgets/category_card.dart';
 
 class Home extends StatelessWidget {
@@ -14,6 +16,8 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     const bigSpace = 30.0;
     const smallSpace = 20.0;
+    final DatabaseRepository databaseRepository = DatabaseRepository();
+    final fetchCategories = databaseRepository.fetchCategories();
 
     return SafeArea(
       child: Scaffold(
@@ -97,41 +101,78 @@ class Home extends StatelessWidget {
                 height: bigSpace,
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height / 8,
-                child: ListView.separated(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 10,
-                    separatorBuilder: (context, index) {
-                      return const SizedBox(
-                        width: 20,
-                      );
+                  height: MediaQuery.of(context).size.height / 8,
+                  child: FutureBuilder(
+                    future: fetchCategories,
+                    builder: (context, snapShot) {
+                      if (snapShot.connectionState == ConnectionState.done) {
+                        if (snapShot.hasData) {
+                          List<ProductModel> categories =
+                              snapShot.data as List<ProductModel>;
+                          return ListView.separated(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: categories.length,
+                              separatorBuilder: (context, index) {
+                                return const SizedBox(
+                                  width: 10,
+                                );
+                              },
+                              itemBuilder: (context, index) {
+                                return CategoryCard(
+                                  title: categories[index].title,
+                                  imageUrl: categories[index].imageUrl,
+                                );
+                              });
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
                     },
-                    itemBuilder: (context, index) {
-                      return CategoryCard(
-                        title: "Clothes",
-                      );
-                    }),
-              ),
+                  )),
               const SizedBox(
                 height: bigSpace,
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height / 4,
-                child: ListView.separated(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 10,
-                    separatorBuilder: (context, index) {
-                      return const SizedBox(
-                        width: 20,
-                      );
+                  height: MediaQuery.of(context).size.height / 4,
+                  child: StreamBuilder(
+                    stream: databaseRepository.fetchAllItems(),
+                    builder: (context, snapShot) {
+                      //TODO add the error builder
+                      if (snapShot.hasData) {
+                        final result = snapShot.data;
+                        final docs = result!.docs;
+
+                        return ListView.separated(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: docs.length,
+                            separatorBuilder: (context, index) {
+                              return const SizedBox(
+                                width: 20,
+                              );
+                            },
+                            itemBuilder: (context, index) {
+                              return LikeItemDisplay(
+                                  imageLink: docs[index]["image_url"],
+                                  title: docs[index]["title"],
+                                  amount: docs[index]["amount"],
+                                  rating: double.tryParse(
+                                      docs[index]["rating"].toString())!);
+                            });
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
                     },
-                    itemBuilder: (context, index) {
-                      return LikeItemDisplay(
-                          title: "Smart Bag", amount: 250, rating: 4.5);
-                    }),
-              ),
+                  )),
               const SizedBox(
                 height: bigSpace,
               ),
@@ -162,21 +203,39 @@ class Home extends StatelessWidget {
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height / 8,
-                child: ListView.separated(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 10,
-                    separatorBuilder: (context, index) {
-                      return const SizedBox(
-                        width: 20,
-                      );
-                    },
-                    itemBuilder: (context, index) {
-                      return PopularItemCard(
-                        itemName: "Thin chair",
-                        amount: 99,
-                      );
-                    }),
+                child:
+                 StreamBuilder(
+                   stream: databaseRepository.fetchPopularItems(),
+                   builder: (context,snapShot) {
+                     if (snapShot.hasData){
+                       final result = snapShot.data;
+                       final docs = result!.docs;
+                       // print ("docs is $docs");
+                       return ListView.separated(
+                           shrinkWrap: true,
+                           scrollDirection: Axis.horizontal,
+                           itemCount: docs.length,
+                           separatorBuilder: (context, index) {
+                             return const SizedBox(
+                               width: 20,
+                             );
+                           },
+                           itemBuilder: (context, index) {
+                             return PopularItemCard(
+                               imageUrl: docs[index]["image_url"],
+                               itemName: docs[index]["title"],
+                               amount: docs[index]["amount"],
+                             );
+                           });
+                     }else{
+                       return const Center(
+                         child: CircularProgressIndicator(),
+                       );
+                     }
+                   },
+                 )
+
+
               ),
             ],
           ),
