@@ -1,16 +1,15 @@
-import 'package:ecommerce_dummy_app/bloc/authentication_bloc.dart';
-import 'package:ecommerce_dummy_app/bloc/user_info_bloc.dart';
-import 'package:ecommerce_dummy_app/bloc/user_info_state.dart';
-import 'package:ecommerce_dummy_app/login/screens/login_screen.dart';
-import 'package:ecommerce_dummy_app/repositories/user_repository.dart';
-import 'package:ecommerce_dummy_app/utils/appstyles.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../repositories/authentication_respository.dart';
-import '../../utils/app_images.dart';
+import '../../../bloc/authentication_bloc.dart';
+import '../../../bloc/user_info_bloc.dart';
+import '../../../bloc/user_info_state.dart';
+import '../../../repositories/authentication_respository.dart';
+import '../../../repositories/user_repository.dart';
+import '../../../utils/app_images.dart';
+import '../../../utils/appstyles.dart';
+import '../../onboarding/login/screens/login_screen.dart';
+
 
 class UserProfile extends StatelessWidget {
   const UserProfile({Key? key}) : super(key: key);

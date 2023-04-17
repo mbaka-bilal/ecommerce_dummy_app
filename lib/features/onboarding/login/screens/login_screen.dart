@@ -1,25 +1,23 @@
-import 'package:ecommerce_dummy_app/bloc/authentication_event.dart';
-import 'package:ecommerce_dummy_app/forgot_password/screens/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../bloc/form_state_cubit.dart';
-import '../../../signup/screens/signup.dart';
-import '../../../utils/app_images.dart';
-import '../../../utils/appstyles.dart';
-import '../../../utils/validator.dart';
-import '../../../widgets/my_form.dart';
-import '../../../widgets/mybutton.dart';
-import '../../bloc/authentication_bloc.dart';
-import '../../bloc/authentication_state.dart';
-import '../../dashboard/screens/dashboard.dart';
-import '../../models/authentication_model.dart';
-import '../../profile/screens/user_profile.dart';
-import '../../repositories/authentication_respository.dart';
-import '../../repositories/user_repository.dart';
+import '../../../../bloc/authentication_bloc.dart';
+import '../../../../bloc/authentication_state.dart';
+import '../../../../bloc/form_state_cubit.dart';
+import '../../../../models/authentication_model.dart';
+import '../../../../repositories/authentication_respository.dart';
+import '../../../../repositories/user_repository.dart';
+import '../../../../utils/app_images.dart';
+import '../../../../utils/appstyles.dart';
+import '../../../../utils/validator.dart';
+import '../../../../widgets/my_alert_dialog.dart';
+import '../../../../widgets/my_form.dart';
+import '../../../../widgets/mybutton.dart';
+import '../../../dashboard/screens/dashboard.dart';
+import '../../../forgot_password/screens/forgot_password_screen.dart';
+import '../../signup/screens/signup.dart';
 import '../../signup/screens/signup_successfull.dart';
-import '../../widgets/my_alert_dialog.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);

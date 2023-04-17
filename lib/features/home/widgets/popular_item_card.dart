@@ -1,9 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
-import '../../utils/app_images.dart';
-import '../../utils/appstyles.dart';
+import '../../../utils/appstyles.dart';
+
 
 class PopularItemCard extends StatelessWidget {
   ///Widget to display the popular items

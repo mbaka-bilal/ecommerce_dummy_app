@@ -1,18 +1,19 @@
-import 'package:ecommerce_dummy_app/bloc/authentication_bloc.dart';
-import 'package:ecommerce_dummy_app/forgot_password/screens/email_sent_screen.dart';
-import 'package:ecommerce_dummy_app/repositories/authentication_respository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/authentication_state.dart';
-import '../../bloc/form_state_cubit.dart';
-import '../../models/authentication_model.dart';
-import '../../utils/app_images.dart';
-import '../../utils/appstyles.dart';
-import '../../utils/validator.dart';
-import '../../widgets/my_alert_dialog.dart';
-import '../../widgets/my_form.dart';
-import '../../widgets/mybutton.dart';
+import '../../../bloc/authentication_bloc.dart';
+import '../../../bloc/authentication_state.dart';
+import '../../../bloc/form_state_cubit.dart';
+import '../../../models/authentication_model.dart';
+import '../../../repositories/authentication_respository.dart';
+import '../../../utils/app_images.dart';
+import '../../../utils/appstyles.dart';
+import '../../../utils/validator.dart';
+import '../../../widgets/my_alert_dialog.dart';
+import '../../../widgets/my_form.dart';
+import '../../../widgets/mybutton.dart';
+import 'email_sent_screen.dart';
+
 
 class ForgotPasswordScreen extends StatelessWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);

@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../login/screens/login_screen.dart';
 import '../../utils/app_images.dart';
 import '../../utils/appstyles.dart';
 import '../../widgets/circular_progress.dart';
 import '../../widgets/mybutton.dart';
 
+import 'login/screens/login_screen.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({Key? key}) : super(key: key);
@@ -58,7 +58,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   @override
   void dispose() {
-    if (timer != null){
+    if (timer != null) {
       timer!.cancel();
     }
     pageController.dispose();
@@ -86,8 +86,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           ),
           Expanded(
             child: Padding(
-              padding:
-                  const EdgeInsets.only(left: 20.0, right: 20.0,),
+              padding: const EdgeInsets.only(
+                left: 20.0,
+                right: 20.0,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -112,7 +114,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
                               builder: (context) => const LoginScreen()),
-                              (route) => false);
+                          (route) => false);
                     },
                     text: "Next",
                     textStyle: Theme.of(context)

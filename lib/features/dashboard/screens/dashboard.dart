@@ -1,10 +1,10 @@
-import 'package:ecommerce_dummy_app/profile/screens/user_profile.dart';
-import 'package:ecommerce_dummy_app/utils/appstyles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../utils/app_images.dart';
+import '../../../utils/appstyles.dart';
 import '../../home/screens/home.dart';
-import '../../utils/app_images.dart';
+import '../../profile/screens/user_profile.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);

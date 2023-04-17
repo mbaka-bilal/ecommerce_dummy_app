@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../utils/app_images.dart';
-import '../../utils/appstyles.dart';
+import '../../../utils/app_images.dart';
+import '../../../utils/appstyles.dart';
+
+
 
 class ResetLinkSentScreen extends StatelessWidget {
   const ResetLinkSentScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // const bigSpace = 30.0;
 
     return Scaffold(
         appBar: AppBar(
@@ -17,13 +18,7 @@ class ResetLinkSentScreen extends StatelessWidget {
           },
             icon: const Icon(Icons.arrow_back_ios,color: AppColors.gray,),
           ),
-          // title: Text(
-          //   "Sign Up",
-          //   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-          //     color: AppColors.gray,
-          //   ),
-          // ),
-          // centerTitle: true,
+
         ),
         body: Column(
       mainAxisAlignment: MainAxisAlignment.center,

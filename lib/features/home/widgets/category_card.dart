@@ -1,9 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
-import '../../utils/app_images.dart';
-import '../../utils/appstyles.dart';
+import '../../../utils/appstyles.dart';
+
 
 class CategoryCard extends StatelessWidget {
   const CategoryCard({Key? key, required this.title, required this.imageUrl}) : super(key: key);
@@ -14,7 +13,7 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration:  const BoxDecoration(
         boxShadow: [
           BoxShadow(

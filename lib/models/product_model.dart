@@ -14,12 +14,7 @@ class ProductModel extends Equatable {
   final String imageUrl;
   final dynamic rating;
   final int? amount;
-  final DocumentSnapshot documentSnapshot;
-
-  // @override
-  // String toString() {
-  //   return "ProductModel{$title,$imageUrl,$rating,$amount}";
-  // }
+  final DocumentSnapshot? documentSnapshot;
 
   @override
   List<Object?> get props =>

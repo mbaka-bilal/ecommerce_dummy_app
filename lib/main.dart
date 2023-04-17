@@ -1,5 +1,3 @@
-import 'package:ecommerce_dummy_app/repositories/authentication_respository.dart';
-import 'package:ecommerce_dummy_app/repositories/user_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/authentication_bloc.dart';
 import 'bloc/form_state_cubit.dart';
 import 'bloc/user_info_bloc.dart';
+import 'features/onboarding/splash_screen.dart';
 import 'firebase_options.dart';
-import 'onboarding/splash_screen.dart';
+import 'repositories/authentication_respository.dart';
+import 'repositories/user_repository.dart';
 import 'utils/appstyles.dart';
 
 void main() async {

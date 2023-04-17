@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../bloc/form_state_cubit.dart';
-import '../../../utils/validator.dart';
-import '../../../widgets/my_form.dart';
-import '../../../widgets/mybutton.dart';
-import '../../../utils/appstyles.dart';
 
-import '../../bloc/authentication_bloc.dart';
-import '../../bloc/authentication_state.dart';
-import '../../models/authentication_model.dart';
-import '../../repositories/authentication_respository.dart';
-import '../../utils/app_images.dart';
-import '../../widgets/my_alert_dialog.dart';
+import '../../../../bloc/authentication_bloc.dart';
+import '../../../../bloc/authentication_state.dart';
+import '../../../../bloc/form_state_cubit.dart';
+import '../../../../models/authentication_model.dart';
+import '../../../../repositories/authentication_respository.dart';
+import '../../../../utils/app_images.dart';
+import '../../../../utils/appstyles.dart';
+import '../../../../utils/validator.dart';
+import '../../../../widgets/my_alert_dialog.dart';
+import '../../../../widgets/my_form.dart';
+import '../../../../widgets/mybutton.dart';
 import 'signup_successfull.dart';
 
 class SignUpScreen extends StatelessWidget {

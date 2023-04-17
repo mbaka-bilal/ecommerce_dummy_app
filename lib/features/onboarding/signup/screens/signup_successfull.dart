@@ -1,14 +1,15 @@
-import 'package:ecommerce_dummy_app/repositories/authentication_respository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/authentication_bloc.dart';
-import '../../bloc/authentication_state.dart';
-import '../../models/authentication_model.dart';
-import '../../utils/app_images.dart';
-import '../../utils/appstyles.dart';
-import '../../widgets/my_alert_dialog.dart';
+import '../../../../bloc/authentication_bloc.dart';
+import '../../../../bloc/authentication_state.dart';
+import '../../../../models/authentication_model.dart';
+import '../../../../repositories/authentication_respository.dart';
+import '../../../../utils/app_images.dart';
+import '../../../../utils/appstyles.dart';
+import '../../../../widgets/my_alert_dialog.dart';
+
 
 class SignUpSuccessfullyScreen extends StatefulWidget {
   const SignUpSuccessfullyScreen({Key? key}) : super(key: key);
@@ -21,8 +22,6 @@ class SignUpSuccessfullyScreen extends StatefulWidget {
 class _SignUpSuccessfullyScreenState extends State<SignUpSuccessfullyScreen> {
   late final AuthenticationRepository _repositoryProvider;
   final user = FirebaseAuth.instance.currentUser;
-
-  // Future<void> init async ()
 
   @override
   void initState() {
