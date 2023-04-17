@@ -1,4 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce_dummy_app/bloc/fetch_product_bloc.dart';
+import 'package:ecommerce_dummy_app/bloc/fetch_product_event.dart';
+import 'package:ecommerce_dummy_app/bloc/fetch_product_state.dart';
+import 'package:ecommerce_dummy_app/models/last_product.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../home/widgets/like_item_display.dart';
 import '../../home/widgets/popular_item_card.dart';
@@ -14,11 +20,63 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const bigSpace = 30.0;
-    const smallSpace = 20.0;
-    final DatabaseRepository databaseRepository = DatabaseRepository();
-    final fetchCategories = databaseRepository.fetchCategories();
+    final databaseRepository = DatabaseRepository();
 
+    return RepositoryProvider.value(
+        value: databaseRepository,
+        child: BlocProvider<ProductBloc>(
+          create: (BuildContext context) =>
+              ProductBloc(databaseRepository: databaseRepository),
+          child: const BuildBody(),
+        ));
+  }
+}
+
+class BuildBody extends StatefulWidget {
+  const BuildBody({Key? key}) : super(key: key);
+
+  @override
+  State<BuildBody> createState() => _BuildBodyState();
+}
+
+class _BuildBodyState extends State<BuildBody> {
+  static const bigSpace = 30.0;
+  static const smallSpace = 20.0;
+  final _latestProductScrollController = ScrollController();
+  late LastProduct _lastProduct;
+  List<ProductModel> _latestProducts = [];
+  double _previousScroll = 0.0;
+
+  // final DatabaseRepository databaseRepository = DatabaseRepository();
+  // final fetchCategories = databaseRepository.fetchCategories();
+
+  @override
+  void initState() {
+    super.initState();
+    RepositoryProvider.of<DatabaseRepository>(context).fetchProducts();
+    // context.read<ProductBloc>().add(const FetchAllProducts());
+    _latestProductScrollController.addListener(() {
+      _scrollListener();
+    });
+  }
+
+  void _scrollListener() {
+    double maxScroll = _latestProductScrollController.position.maxScrollExtent;
+    double currentScroll = _latestProductScrollController.position.pixels;
+    double scrollPercentage = (currentScroll / maxScroll) * 100;
+
+    if (currentScroll > _previousScroll) {
+      if (scrollPercentage >= 90) {
+        RepositoryProvider.of<DatabaseRepository>(context).fetchProducts(
+            context.read<ProductBloc>().state.products.last.documentSnapshot);
+      }
+    }
+
+    _previousScroll = currentScroll;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
           body: Padding(
@@ -100,79 +158,45 @@ class Home extends StatelessWidget {
               const SizedBox(
                 height: bigSpace,
               ),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height / 8,
-                  child: FutureBuilder(
-                    future: fetchCategories,
-                    builder: (context, snapShot) {
-                      if (snapShot.connectionState == ConnectionState.done) {
-                        if (snapShot.hasData) {
-                          List<ProductModel> categories =
-                              snapShot.data as List<ProductModel>;
-                          return ListView.separated(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: categories.length,
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(
-                                  width: 10,
-                                );
-                              },
-                              itemBuilder: (context, index) {
-                                return CategoryCard(
-                                  title: categories[index].title,
-                                  imageUrl: categories[index].imageUrl,
-                                );
-                              });
-                        } else {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    },
-                  )),
+              // SizedBox(
+              //     height: MediaQuery.of(context).size.height / 8,
+              //     child: FutureBuilder(
+              //       future: fetchCategories,
+              //       builder: (context, snapShot) {
+              //         if (snapShot.connectionState == ConnectionState.done) {
+              //           if (snapShot.hasData) {
+              //             List<ProductModel> categories =
+              //                 snapShot.data as List<ProductModel>;
+              //             return ListView.separated(
+              //                 shrinkWrap: true,
+              //                 scrollDirection: Axis.horizontal,
+              //                 itemCount: categories.length,
+              //                 separatorBuilder: (context, index) {
+              //                   return const SizedBox(
+              //                     width: 10,
+              //                   );
+              //                 },
+              //                 itemBuilder: (context, index) {
+              //                   return CategoryCard(
+              //                     title: categories[index].title,
+              //                     imageUrl: categories[index].imageUrl,
+              //                   );
+              //                 });
+              //           } else {
+              //             return const Center(
+              //               child: CircularProgressIndicator(),
+              //             );
+              //           }
+              //         } else {
+              //           return const Center(
+              //             child: CircularProgressIndicator(),
+              //           );
+              //         }
+              //       },
+              //     )),
               const SizedBox(
                 height: bigSpace,
               ),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height / 4,
-                  child: StreamBuilder(
-                    stream: databaseRepository.fetchAllItems(),
-                    builder: (context, snapShot) {
-                      //TODO add the error builder
-                      if (snapShot.hasData) {
-                        final result = snapShot.data;
-                        final docs = result!.docs;
-
-                        return ListView.separated(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: docs.length,
-                            separatorBuilder: (context, index) {
-                              return const SizedBox(
-                                width: 20,
-                              );
-                            },
-                            itemBuilder: (context, index) {
-                              return LikeItemDisplay(
-                                  imageLink: docs[index]["image_url"],
-                                  title: docs[index]["title"],
-                                  amount: docs[index]["amount"],
-                                  rating: double.tryParse(
-                                      docs[index]["rating"].toString())!);
-                            });
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    },
-                  )),
               const SizedBox(
                 height: bigSpace,
               ),
@@ -180,7 +204,7 @@ class Home extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Popular",
+                    "Latest",
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
@@ -199,44 +223,102 @@ class Home extends StatelessWidget {
                 ],
               ),
               const SizedBox(
-                height: bigSpace,
+                height: smallSpace,
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 8,
-                child:
-                 StreamBuilder(
-                   stream: databaseRepository.fetchPopularItems(),
-                   builder: (context,snapShot) {
-                     if (snapShot.hasData){
-                       final result = snapShot.data;
-                       final docs = result!.docs;
-                       // print ("docs is $docs");
-                       return ListView.separated(
-                           shrinkWrap: true,
-                           scrollDirection: Axis.horizontal,
-                           itemCount: docs.length,
-                           separatorBuilder: (context, index) {
-                             return const SizedBox(
-                               width: 20,
-                             );
-                           },
-                           itemBuilder: (context, index) {
-                             return PopularItemCard(
-                               imageUrl: docs[index]["image_url"],
-                               itemName: docs[index]["title"],
-                               amount: docs[index]["amount"],
-                             );
-                           });
-                     }else{
-                       return const Center(
-                         child: CircularProgressIndicator(),
-                       );
-                     }
-                   },
-                 )
+              BlocBuilder<ProductBloc, ProductState>(
+                builder: (context, state) {
+                  if (state.status == ProductStatus.success) {
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height / 4,
+                      child: ListView.separated(
+                          controller: _latestProductScrollController,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.products.length,
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(
+                              width: 20,
+                            );
+                          },
+                          itemBuilder: (context, index) {
+                            // print("the docs is ${docs[index]["title"]}");
 
-
+                            return LikeItemDisplay(
+                                imageLink: state.products[index].imageUrl,
+                                title: state.products[index].title,
+                                amount: 1000,
+                                rating: double.tryParse("3.8")!);
+                          }),
+                    );
+                  } else if (state.status == ProductStatus.initial) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    return Text("Error");
+                  }
+                },
               ),
+              // const SizedBox(
+              //   height: bigSpace,
+              // ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Text(
+              //       "Popular",
+              //       style: Theme.of(context)
+              //           .textTheme
+              //           .bodyMedium!
+              //           .copyWith(fontSize: 16),
+              //     ),
+              //     InkWell(
+              //       onTap: () {},
+              //       child: Text(
+              //         "View All",
+              //         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              //               color: AppColors.gray03,
+              //               fontSize: 12,
+              //             ),
+              //       ),
+              //     )
+              //   ],
+              // ),
+              // const SizedBox(
+              //   height: bigSpace,
+              // ),
+              // SizedBox(
+              //     height: MediaQuery.of(context).size.height / 8,
+              //     child: StreamBuilder(
+              //       stream: databaseRepository.fetchPopularItems(),
+              //       builder: (context, snapShot) {
+              //         if (snapShot.hasData) {
+              //           final result = snapShot.data;
+              //           final docs = result!.docs;
+              //           // print ("docs is $docs");
+              //           return ListView.separated(
+              //               shrinkWrap: true,
+              //               scrollDirection: Axis.horizontal,
+              //               itemCount: docs.length,
+              //               separatorBuilder: (context, index) {
+              //                 return const SizedBox(
+              //                   width: 20,
+              //                 );
+              //               },
+              //               itemBuilder: (context, index) {
+              //                 return PopularItemCard(
+              //                   imageUrl: docs[index]["image_url"],
+              //                   itemName: docs[index]["title"],
+              //                   amount: docs[index]["amount"],
+              //                 );
+              //               });
+              //         } else {
+              //           return const Center(
+              //             child: CircularProgressIndicator(),
+              //           );
+              //         }
+              //       },
+              //     )),
             ],
           ),
         ),
