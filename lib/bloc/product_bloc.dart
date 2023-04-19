@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 
 import '../bloc/product_event.dart';
 import '../bloc/product_state.dart';
@@ -32,9 +33,15 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           hasReachedMax: false,
         ));
       } else {
-        if (state.products.isEmpty) {
+        if (event.products.isEmpty) {
+          if (kDebugMode){
+            print ("latest products has reached maximum");
+          }
           emit(state.copyWith(hasReachedMax: true));
         } else {
+          if (kDebugMode){
+            print ("adding to latest products");
+          }
           emit(state.copyWith(
             status: ProductStatus.success,
             products: List.of(state.products)

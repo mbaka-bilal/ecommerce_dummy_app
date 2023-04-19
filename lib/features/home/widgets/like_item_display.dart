@@ -71,6 +71,34 @@ class LikeItemDisplay extends StatelessWidget {
                 crossAxisAlignment:
                 CrossAxisAlignment.start,
                 children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.star,
+                        color: Colors.yellow,
+                        size: 12,
+                      ),
+                      const SizedBox(
+                        width: 3,
+                      ),
+                      Text(
+                        "$rating",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(
+                            color:
+                            AppColors.gray03),
+                      ),
+
+                    ],
+                  )
+                ],
+              ),
+
+                  const SizedBox(
+                    height: 3,
+                  ),
                   Text(
                     title,
                     style: Theme.of(context)
@@ -100,31 +128,23 @@ class LikeItemDisplay extends StatelessWidget {
                               .copyWith(
                               color: AppColors.blue),
                         ),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.star,
-                              color: Colors.yellow,
-                              size: 12,
+
+                        InkWell(
+                          onTap: () {},
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.blue,
+                              borderRadius: BorderRadius.circular(360)
                             ),
-                            const SizedBox(
-                              width: 3,
+                            child: Icon(
+                              Icons.add,
+                              color: Colors.white
                             ),
-                            Text(
-                              "$rating",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                  color:
-                                  AppColors.gray03),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
+                          ),
+                        ),
+]
                   )
-                ],
+
               ),
             ],
           ),
