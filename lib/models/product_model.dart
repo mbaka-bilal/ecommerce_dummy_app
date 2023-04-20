@@ -8,9 +8,11 @@ class ProductModel extends Equatable {
       this.amount = 0,
       required this.title,
       required this.imageUrl,
+        this.category,
       required this.documentSnapshot});
 
   final String title;
+  final String? category;
   final String imageUrl;
   final dynamic rating;
   final int? amount;

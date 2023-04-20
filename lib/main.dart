@@ -1,9 +1,15 @@
+import 'package:ecommerce_dummy_app/repositories/database_repository.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bloc/authentication_bloc.dart';
+import 'bloc/filter_options.dart';
+import 'bloc/filter_product_bloc.dart';
 import 'bloc/form_state_cubit.dart';
+import 'bloc/popular_products_bloc.dart';
+import 'bloc/product_bloc.dart';
+import 'bloc/search_products_bloc.dart';
 import 'bloc/user_info_bloc.dart';
 import 'features/onboarding/splash_screen.dart';
 import 'firebase_options.dart';
@@ -29,12 +35,14 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late final AuthenticationRepository _authenticationRepository;
   late final UserRepository _userRepository;
+  late final DatabaseRepository _databaseRepository;
 
   @override
   void initState() {
     super.initState();
     _authenticationRepository = AuthenticationRepository();
     _userRepository = UserRepository();
+    _databaseRepository = DatabaseRepository();
   }
 
   @override
@@ -53,6 +61,9 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider.value(
           value: _userRepository,
         ),
+        RepositoryProvider.value(
+          value: _databaseRepository,
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -67,6 +78,26 @@ class _MyAppState extends State<MyApp> {
           ),
           BlocProvider<UserInfoBloc>(
             create: (context) => UserInfoBloc(userRepository: _userRepository),
+          ),
+          BlocProvider<ProductBloc>(
+            create: (BuildContext context) =>
+                ProductBloc(databaseRepository: _databaseRepository),
+          ),
+          BlocProvider<PopularProductsBloc>(
+            create: (BuildContext context) =>
+                PopularProductsBloc(databaseRepository: _databaseRepository),
+          ),
+          BlocProvider<SearchProductBloc>(
+            create: (BuildContext context) =>
+                SearchProductBloc(databaseRepository: _databaseRepository),
+          ),
+          BlocProvider<FilterProductBloc>(
+            create: (BuildContext context) =>
+                FilterProductBloc(databaseRepository: _databaseRepository),
+          ),
+          BlocProvider<FilterOptionsBloc>(
+            create: (BuildContext context) =>
+            FilterOptionsBloc(),
           ),
         ],
         child: const Home(),

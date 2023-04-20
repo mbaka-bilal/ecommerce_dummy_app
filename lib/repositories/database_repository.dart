@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce_dummy_app/bloc/product_event.dart';
-import 'package:ecommerce_dummy_app/bloc/product_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/product_model.dart';
+import '../bloc/filter_product_state.dart';
+
 
 class DatabaseRepository {
   final _fDatabase = FirebaseFirestore.instance;
@@ -15,6 +15,7 @@ class DatabaseRepository {
   final _controller = StreamController<List<ProductModel>>();
   final _popularItemController = StreamController<List<ProductModel>>();
   final _searchProductsController = StreamController<List<dynamic>>();
+  final _filterProductController = StreamController<List<dynamic>>();
 
   Stream<List<ProductModel>> get status async* {
     yield* _controller.stream;
@@ -28,6 +29,140 @@ class DatabaseRepository {
     yield* _searchProductsController.stream;
   }
 
+  Stream<List<dynamic>> get filterProductStream async* {
+    yield* _filterProductController.stream;
+  }
+
+  void filterProduct(
+      {required String collectionName,
+      String? searchString,
+      String? category,
+      int? priceRange,
+      double? rating}) {
+    List<ProductModel> products = [];
+
+    try {
+      var query;
+
+      if (searchString != null && searchString.trim().isNotEmpty) {
+        query = _fDatabase
+            .collection(collectionName)
+            .where("title", isGreaterThanOrEqualTo: searchString)
+            .where("title", isLessThan: "${searchString}z");
+      } else {
+        query = _fDatabase.collection(collectionName);
+      }
+
+      query.snapshots().listen((event) {
+        final List<QueryDocumentSnapshot<Map<String, dynamic>>> snapShot =
+            event.docs;
+
+        for (var element in snapShot) {
+          final data = element.data();
+
+          /* filter out the needed */
+          /* Had to do it here because firebase does not allow multiple less than
+        equal to on different fields.
+         */
+
+          if (category != null && priceRange != null && rating != null) {
+            print("all not null");
+            if (data["category"] == category &&
+                data["amount"] >= priceRange &&
+                data["rating"] >= rating) {
+              products.add(ProductModel(
+                  rating: data["rating"],
+                  amount: data["amount"],
+                  title: data["title"],
+                  category: data["category"],
+                  imageUrl: data["image_url"],
+                  documentSnapshot: element));
+            }
+          } else if (category == null && priceRange != null && rating != null) {
+            print("only category null");
+            if (data["amount"] >= priceRange && data["rating"] >= rating) {
+              products.add(ProductModel(
+                  rating: data["rating"],
+                  amount: data["amount"],
+                  title: data["title"],
+                  category: data["category"],
+                  imageUrl: data["image_url"],
+                  documentSnapshot: element));
+            }
+          } else if (category != null && priceRange == null && rating != null) {
+            print("only price range null");
+            if (category == data["category"] && data["rating"] >= rating) {
+              products.add(ProductModel(
+                  rating: data["rating"],
+                  amount: data["amount"],
+                  title: data["title"],
+                  category: data["category"],
+                  imageUrl: data["image_url"],
+                  documentSnapshot: element));
+            }
+          } else if (category != null && priceRange != null && rating == null) {
+            print("only rating null");
+            if (category == data["category"] && data["amount"] >= priceRange) {
+              products.add(ProductModel(
+                  rating: data["rating"],
+                  amount: data["amount"],
+                  title: data["title"],
+                  category: data["category"],
+                  imageUrl: data["image_url"],
+                  documentSnapshot: element));
+            }
+          } else if (category != null && priceRange == null && rating == null) {
+            print("only category not null");
+            if (category == data["category"]) {
+              products.add(ProductModel(
+                  rating: data["rating"],
+                  amount: data["amount"],
+                  title: data["title"],
+                  category: data["category"],
+                  imageUrl: data["image_url"],
+                  documentSnapshot: element));
+            }
+          } else if (category == null && priceRange != null && rating == null) {
+            print("only price range not null");
+            if (data["amount"] >= priceRange) {
+              products.add(ProductModel(
+                  rating: data["rating"],
+                  amount: data["amount"],
+                  title: data["title"],
+                  category: data["category"],
+                  imageUrl: data["image_url"],
+                  documentSnapshot: element));
+            }
+          } else if (category == null && priceRange == null && rating != null) {
+            print("only rating not null");
+            if (data["rating"] >= rating) {
+              products.add(ProductModel(
+                  rating: data["rating"],
+                  amount: data["amount"],
+                  title: data["title"],
+                  category: data["category"],
+                  imageUrl: data["image_url"],
+                  documentSnapshot: element));
+            }
+          } else {
+            print("all of them null");
+            products.add(ProductModel(
+                rating: data["rating"],
+                amount: data["amount"],
+                title: data["title"],
+                category: data["category"],
+                imageUrl: data["image_url"],
+                documentSnapshot: element));
+          }
+        }
+        _filterProductController.add([products, FilterProductStatus.success]);
+      });
+    } catch (e) {
+      print("error filtering products $e");
+      _filterProductController.add([[], FilterProductStatus.failed]);
+    }
+  }
+
   void searchProducts(String search, [DocumentSnapshot? startAfterDocument]) {
     //TODO add pagination.
     List<ProductModel> data = [];
@@ -36,7 +171,6 @@ class DatabaseRepository {
       _searchProductsController.add([search, data]);
       return;
     }
-
 
     try {
       if (startAfterDocument == null) {
@@ -125,8 +259,8 @@ class DatabaseRepository {
                 imageUrl: element.data()["image_url"],
                 documentSnapshot: element));
           }
-          if (kDebugMode){
-            print ("the new latest data is $data");
+          if (kDebugMode) {
+            print("the new latest data is $data");
           }
           _controller.add(data);
         });
@@ -224,14 +358,27 @@ class DatabaseRepository {
         );
         productCategories.add(product);
       }
-      if (kDebugMode) {
-        print("Sucessfully Fetch the categories $productCategories");
-      }
+      // if (kDebugMode) {
+      //   print("Sucessfully Fetch the categories $productCategories");
+      // }
       return productCategories;
     } catch (e) {
       if (kDebugMode) {
         print("Error fetching the categories $e");
       }
+      rethrow;
+    }
+  }
+
+  Future<AggregateQuerySnapshot> countDocumentsInCollection(
+      {required String collectionName, String? categoryName}) async {
+    try {
+      final database = _fDatabase
+          .collection(collectionName)
+          .where("category", isEqualTo: categoryName)
+          .count();
+      return await database.get(source: AggregateSource.server);
+    } catch (e) {
       rethrow;
     }
   }

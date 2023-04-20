@@ -23,4 +23,5 @@ class AppImages {
   static const clothes = "${basePath}clothes.svg";
   static const faceMask = "${basePath}face_mask.svg";
   static const filters = "${basePath}filters.svg";
+  static const boxLines = "${basePath}box_lines.svg";
 }
