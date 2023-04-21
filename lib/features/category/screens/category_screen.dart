@@ -16,15 +16,13 @@ class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key, required this.categoryTitle})
       : super(key: key);
 
-  final String categoryTitle;
+  final String? categoryTitle;
 
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
-
-
   @override
   void initState() {
     super.initState();
@@ -136,7 +134,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                             width: 10,
                           ),
                           Text(
-                            widget.categoryTitle.convertFirstToUpperCase,
+                            (widget.categoryTitle == null)
+                                ? " "
+                                : widget.categoryTitle!.convertFirstToUpperCase,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium!
@@ -148,36 +148,36 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         ],
                       ),
                       FutureBuilder(
-                        future: DatabaseRepository().countDocumentsInCollection(collectionName: "items",categoryName: widget.categoryTitle),
-                        builder: (context,snapShotState) {
-                          if (snapShotState.hasData){
+                        future: DatabaseRepository().countDocumentsInCollection(
+                            collectionName: "items",
+                            categoryName: widget.categoryTitle),
+                        builder: (context, snapShotState) {
+                          if (snapShotState.hasData) {
                             final data = snapShotState.data;
                             return Row(
                               children: [
-                              Text(
-                              "${data!.count} total items",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(
-                                color: AppColors.gray04,
-                                fontSize: 14,
-                              ),
-                            ),
-                          const SizedBox(
-                          width: 10,
-                          ),
-                          SvgPicture.asset(
-                          AppImages.boxLines,
-                          color: AppColors.gray,
-                          )
-                          ],
-                          );
-                          }else{
+                                Text(
+                                  "${data!.count} total items",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                        color: AppColors.gray04,
+                                        fontSize: 14,
+                                      ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                SvgPicture.asset(
+                                  AppImages.boxLines,
+                                  color: AppColors.gray,
+                                )
+                              ],
+                            );
+                          } else {
                             return Container();
                           }
-
-
                         },
                       )
                     ],
@@ -185,10 +185,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                  BlocListener<FilterOptionsBloc,FilterOptions>(
-                    listener: (context,state){
-                      print ("values changed");
-                      RepositoryProvider.of<DatabaseRepository>(context).filterProduct(
+                  BlocListener<FilterOptionsBloc, FilterOptions>(
+                    listener: (context, state) {
+                      // print ("values changed");
+                      RepositoryProvider.of<DatabaseRepository>(context)
+                          .filterProduct(
                         collectionName: "items",
                         category: widget.categoryTitle,
                         rating: state.rating,
@@ -212,17 +213,23 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                 itemCount: state.products.length,
                                 itemBuilder: (context, index) {
                                   return LikeItemDisplay(
+                                      documentID:
+                                          state.products[index].documentID,
                                       title: state.products[index].title,
                                       amount: state.products[index].amount!,
                                       rating: double.tryParse(
                                           "${state.products[index].rating}")!,
-                                      imageLink: state.products[index].imageUrl);
+                                      imageLink:
+                                          state.products[index].imageUrl);
                                 });
                           }
-                        } else if (state.status == FilterProductStatus.initial) {
+                        } else if (state.status ==
+                            FilterProductStatus.initial) {
                           return Container();
-                        } else if (state.status == FilterProductStatus.loading) {
-                          return const Center(child: CircularProgressIndicator());
+                        } else if (state.status ==
+                            FilterProductStatus.loading) {
+                          return const Center(
+                              child: CircularProgressIndicator());
                         } else {
                           return const Text("Error");
                         }

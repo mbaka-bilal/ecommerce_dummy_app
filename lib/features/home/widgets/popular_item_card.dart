@@ -8,7 +8,7 @@ class PopularItemCard extends StatelessWidget {
   ///Widget to display the popular items
   const PopularItemCard({Key? key, required this.itemName, required this.amount, required this.imageUrl}) : super(key: key);
 
-  final String itemName;
+  final String? itemName;
   final int amount;
   final String imageUrl;
 
@@ -43,7 +43,7 @@ class PopularItemCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(itemName),
+                    Text((itemName == null) ? " " : itemName!),
                     const SizedBox(
                       height: 5,
                     ),

@@ -48,9 +48,9 @@ class PopularProductsBloc
         }
       }
     } catch (e) {
-      if (kDebugMode){
-        print ("Error!!! fetching popular products reason: $e");
-      }
+      // if (kDebugMode){
+      //   print ("Error!!! fetching popular products reason: $e");
+      // }
       emit(state.copyWith(status: PopularProductStatus.failure));
     }
   }

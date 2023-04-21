@@ -19,12 +19,12 @@ class UserRepository {
   }
 
   Future<void> fetchUser() async {
-    print("attempting to fetch user");
+    // print("attempting to fetch user");
     if (_user != null) {
-      print("user exists");
+      // print("user exists");
       _controller.add(_user!);
     } else {
-      print("user does not exists fetching new user");
+      // print("user does not exists fetching new user");
 
       try {
         _userInfoSubscription = _fDatabase
@@ -33,14 +33,14 @@ class UserRepository {
             .snapshots()
             .listen((event) {
           Map<String, dynamic> userInfo = event.data()!;
-          print("the user data is $userInfo");
+          // print("the user data is $userInfo");
           _user = User(userInfo["first_name"], userInfo["last_name"],
               _fAuth.currentUser!.email!, _fAuth.currentUser!.uid);
           _controller.add(User(userInfo["first_name"], userInfo["last_name"],
               _fAuth.currentUser!.email!, _fAuth.currentUser!.uid));
         });
       } catch (e) {
-        print("errro fetching user info");
+        // print("errro fetching user info");
         _controller.add(User("Jhon", "Doe", _fAuth.currentUser!.email!,
             _fAuth.currentUser!.uid));
       }

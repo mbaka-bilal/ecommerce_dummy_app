@@ -1,3 +1,4 @@
+import 'package:ecommerce_dummy_app/features/product_info/screens/product_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -271,12 +272,27 @@ class _HomeState extends State<Home> {
                             );
                           },
                           itemBuilder: (context, index) {
-                            return LikeItemDisplay(
-                                imageLink: state.products[index].imageUrl,
-                                title: state.products[index].title,
-                                amount: state.products[index].amount!,
-                                rating: double.tryParse(
-                                    "${state.products[index].rating}")!);
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => ProductInfo(
+                                      documentID: state.products[index].documentID,
+                                      imageUrl: state.products[index].imageUrl,
+                                      productCost: state.products[index].amount!,
+                                      productDescription: state.products[index].description!,
+                                      productName: state.products[index].title!,
+                                      productRating: double.tryParse(
+                                          "${state.products[index].rating}")!,
+                                    )));
+                              },
+                              child: LikeItemDisplay(
+                                  imageLink: state.products[index].imageUrl,
+                                  title: state.products[index].title,
+                                  amount: state.products[index].amount!,
+                                  documentID: state.products[index].documentID,
+                                  rating: double.tryParse(
+                                      "${state.products[index].rating}")!),
+                            );
                           }),
                     );
                   } else if (state.status == ProductStatus.initial) {

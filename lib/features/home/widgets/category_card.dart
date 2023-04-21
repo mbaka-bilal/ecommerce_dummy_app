@@ -7,7 +7,7 @@ import '../../../utils/appstyles.dart';
 class CategoryCard extends StatelessWidget {
   const CategoryCard({Key? key, required this.title, required this.imageUrl}) : super(key: key);
 
-  final String title;
+  final String? title;
   final String imageUrl;
 
   @override
@@ -37,7 +37,7 @@ class CategoryCard extends StatelessWidget {
                 )),
           ),
           Text(
-            title,
+            (title == null) ? " " : title!,
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium!

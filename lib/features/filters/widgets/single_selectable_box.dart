@@ -10,7 +10,7 @@ class SingleSelectableBox extends StatelessWidget {
   }) : super(key: key);
 
   final bool selected;
-  final String title;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class SingleSelectableBox extends StatelessWidget {
             color: selected ? AppColors.blue : Colors.transparent,
             borderRadius: BorderRadius.circular(12)),
         child: Text(
-          title,
+          (title == null) ? " " : title!,
           textAlign: TextAlign.center,
           style: Theme.of(context)
               .textTheme

@@ -2,11 +2,9 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 
 import '../models/product_model.dart';
 import '../bloc/filter_product_state.dart';
-
 
 class DatabaseRepository {
   final _fDatabase = FirebaseFirestore.instance;
@@ -16,6 +14,7 @@ class DatabaseRepository {
   final _popularItemController = StreamController<List<ProductModel>>();
   final _searchProductsController = StreamController<List<dynamic>>();
   final _filterProductController = StreamController<List<dynamic>>();
+  final _favoriteProductController = StreamController<List<dynamic>>();
 
   Stream<List<ProductModel>> get status async* {
     yield* _controller.stream;
@@ -31,6 +30,27 @@ class DatabaseRepository {
 
   Stream<List<dynamic>> get filterProductStream async* {
     yield* _filterProductController.stream;
+  }
+
+  Stream<List<dynamic>> get favoriteProductStream async* {
+    yield* _favoriteProductController.stream;
+  }
+
+  void favoriteProducts(String id){
+    _fDatabase.collection("users").doc(id).snapshots().listen((event) {
+      final Map<String, dynamic>? snapShot =
+          event.data();
+      if (snapShot!["favorites"] == null){
+        _favoriteProductController.add([]);
+      }else{
+
+        _favoriteProductController.add(snapShot["favorites"]);
+      }
+    });
+  }
+
+  Future<void> updateFavoriteProducts(List<dynamic> favorites,String id) async {
+    await _fDatabase.collection("users").doc(id).update({"favorites": favorites});
   }
 
   void filterProduct(
@@ -66,11 +86,13 @@ class DatabaseRepository {
          */
 
           if (category != null && priceRange != null && rating != null) {
-            print("all not null");
+            // print("all not null");
             if (data["category"] == category &&
                 data["amount"] >= priceRange &&
                 data["rating"] >= rating) {
               products.add(ProductModel(
+                documentID: element.id,
+                  description: data["description"],
                   rating: data["rating"],
                   amount: data["amount"],
                   title: data["title"],
@@ -79,9 +101,11 @@ class DatabaseRepository {
                   documentSnapshot: element));
             }
           } else if (category == null && priceRange != null && rating != null) {
-            print("only category null");
+            // print("only category null");
             if (data["amount"] >= priceRange && data["rating"] >= rating) {
               products.add(ProductModel(
+                  documentID: element.id,
+                  description: data["description"],
                   rating: data["rating"],
                   amount: data["amount"],
                   title: data["title"],
@@ -90,9 +114,11 @@ class DatabaseRepository {
                   documentSnapshot: element));
             }
           } else if (category != null && priceRange == null && rating != null) {
-            print("only price range null");
+            // print("only price range null");
             if (category == data["category"] && data["rating"] >= rating) {
               products.add(ProductModel(
+                  documentID: element.id,
+                  description: data["description"],
                   rating: data["rating"],
                   amount: data["amount"],
                   title: data["title"],
@@ -101,9 +127,11 @@ class DatabaseRepository {
                   documentSnapshot: element));
             }
           } else if (category != null && priceRange != null && rating == null) {
-            print("only rating null");
+            // print("only rating null");
             if (category == data["category"] && data["amount"] >= priceRange) {
               products.add(ProductModel(
+                  documentID: element.id,
+                  description: data["description"],
                   rating: data["rating"],
                   amount: data["amount"],
                   title: data["title"],
@@ -112,9 +140,13 @@ class DatabaseRepository {
                   documentSnapshot: element));
             }
           } else if (category != null && priceRange == null && rating == null) {
-            print("only category not null");
+            // print("only category not null");
+            // print ("the data is ${element.id}");
             if (category == data["category"]) {
+              // print("the data is ${data}");
               products.add(ProductModel(
+                  documentID: element.id,
+                  description: data["description"],
                   rating: data["rating"],
                   amount: data["amount"],
                   title: data["title"],
@@ -123,9 +155,11 @@ class DatabaseRepository {
                   documentSnapshot: element));
             }
           } else if (category == null && priceRange != null && rating == null) {
-            print("only price range not null");
+            // print("only price range not null");
             if (data["amount"] >= priceRange) {
               products.add(ProductModel(
+                  documentID: element.id,
+                  description: data["description"],
                   rating: data["rating"],
                   amount: data["amount"],
                   title: data["title"],
@@ -134,9 +168,11 @@ class DatabaseRepository {
                   documentSnapshot: element));
             }
           } else if (category == null && priceRange == null && rating != null) {
-            print("only rating not null");
+            // print("only rating not null");
             if (data["rating"] >= rating) {
               products.add(ProductModel(
+                  documentID: element.id,
+                  description: data["description"],
                   rating: data["rating"],
                   amount: data["amount"],
                   title: data["title"],
@@ -145,8 +181,10 @@ class DatabaseRepository {
                   documentSnapshot: element));
             }
           } else {
-            print("all of them null");
+            // print("all of them null");
             products.add(ProductModel(
+                documentID: element.id,
+                description: data["description"],
                 rating: data["rating"],
                 amount: data["amount"],
                 title: data["title"],
@@ -158,7 +196,7 @@ class DatabaseRepository {
         _filterProductController.add([products, FilterProductStatus.success]);
       });
     } catch (e) {
-      print("error filtering products $e");
+      // print("error filtering products $e");
       _filterProductController.add([[], FilterProductStatus.failed]);
     }
   }
@@ -184,6 +222,8 @@ class DatabaseRepository {
               event.docs;
           for (var element in snapShot) {
             data.add(ProductModel(
+                documentID: element.id,
+                description: element.data()["description"],
                 rating: element.data()["rating"],
                 amount: element.data()["amount"],
                 title: element.data()["title"],
@@ -191,15 +231,15 @@ class DatabaseRepository {
                 documentSnapshot: element));
           }
           _searchProductsController.add([search, data]);
-          if (kDebugMode) {
-            print("The search items are ''' 1 ''' $data");
-          }
+          // if (kDebugMode) {
+          //   print("The search items are ''' 1 ''' $data");
+          // }
         });
       } else {
         _fDatabase
             .collection("items")
             .startAfterDocument(startAfterDocument)
-            .limit(5)
+            .limit(20)
             .where("title", isEqualTo: search)
             .snapshots()
             .listen((event) {
@@ -207,6 +247,8 @@ class DatabaseRepository {
               event.docs;
           for (var element in snapShot) {
             data.add(ProductModel(
+                documentID: element.id,
+                description: element.data()["description"],
                 rating: element.data()["rating"],
                 amount: element.data()["amount"],
                 title: element.data()["title"],
@@ -214,9 +256,9 @@ class DatabaseRepository {
                 documentSnapshot: element));
           }
           _searchProductsController.add([search, data]);
-          if (kDebugMode) {
-            print("The search items are: $data");
-          }
+          // if (kDebugMode) {
+          //   print("The search items are: $data");
+          // }
         });
       }
     } catch (e) {
@@ -226,13 +268,16 @@ class DatabaseRepository {
 
   void fetchProducts([DocumentSnapshot? startAfterDocument]) {
     List<ProductModel> data = [];
+
     try {
       if (startAfterDocument == null) {
-        _fDatabase.collection("items").limit(5).snapshots().listen((event) {
+        _fDatabase.collection("items").orderBy("title").limit(20).snapshots().listen((event) {
           final List<QueryDocumentSnapshot<Map<String, dynamic>>> snapShot =
               event.docs;
           for (var element in snapShot) {
             data.add(ProductModel(
+                documentID: element.id,
+                description: element.data()["description"],
                 rating: element.data()["rating"],
                 amount: element.data()["amount"],
                 title: element.data()["title"],
@@ -243,25 +288,31 @@ class DatabaseRepository {
           // print("data is $data");
         });
       } else {
+        // final Map<String,dynamic> info = startAfterDocument.data() as Map<String,dynamic>;
         _fDatabase
             .collection("items")
+            .orderBy("title")
             .startAfterDocument(startAfterDocument)
-            .limit(5)
+            // .startAfter(["${info['title']}"])
+            .limit(20)
             .snapshots()
             .listen((event) {
           final List<QueryDocumentSnapshot<Map<String, dynamic>>> snapShot =
               event.docs;
           for (var element in snapShot) {
+            // print("the element is ${element.id}");
             data.add(ProductModel(
+                documentID: element.id,
+                description: element.data()["description"],
                 rating: element.data()["rating"],
                 amount: element.data()["amount"],
                 title: element.data()["title"],
                 imageUrl: element.data()["image_url"],
                 documentSnapshot: element));
           }
-          if (kDebugMode) {
-            print("the new latest data is $data");
-          }
+          // if (kDebugMode) {
+          //   print("the new latest data is $data");
+          // }
           _controller.add(data);
         });
       }
@@ -276,7 +327,7 @@ class DatabaseRepository {
       if (startAfterDocument == null) {
         _fDatabase
             .collection("items")
-            .limit(5)
+            .limit(20)
             .where("is_popular", isEqualTo: true)
             .snapshots()
             .listen((event) {
@@ -284,6 +335,8 @@ class DatabaseRepository {
               event.docs;
           for (var element in snapShot) {
             data.add(ProductModel(
+                documentID: element.id,
+                description: element.data()["description"],
                 rating: element.data()["rating"],
                 amount: element.data()["amount"],
                 title: element.data()["title"],
@@ -291,15 +344,15 @@ class DatabaseRepository {
                 documentSnapshot: element));
           }
           _popularItemController.add(data);
-          if (kDebugMode) {
-            print("The popular items are ''' 1 ''' $data");
-          }
+          // if (kDebugMode) {
+          //   print("The popular items are ''' 1 ''' $data");
+          // }
         });
       } else {
         _fDatabase
             .collection("items")
             .startAfterDocument(startAfterDocument)
-            .limit(5)
+            .limit(20)
             .where("is_popular", isEqualTo: true)
             .snapshots()
             .listen((event) {
@@ -307,6 +360,8 @@ class DatabaseRepository {
               event.docs;
           for (var element in snapShot) {
             data.add(ProductModel(
+                documentID: element.id,
+                description: element.data()["description"],
                 rating: element.data()["rating"],
                 amount: element.data()["amount"],
                 title: element.data()["title"],
@@ -314,9 +369,9 @@ class DatabaseRepository {
                 documentSnapshot: element));
           }
           _popularItemController.add(data);
-          if (kDebugMode) {
-            print("The popular items are ''' More items ''' $data");
-          }
+          // if (kDebugMode) {
+          //   print("The popular items are ''' More items ''' $data");
+          // }
         });
       }
     } catch (e) {
@@ -326,7 +381,7 @@ class DatabaseRepository {
 
   Future<void> createUser(String firstName, String lastName) async {
     try {
-      print("adding new user to database");
+      // print("adding new user to database");
       await _fDatabase.collection("users").doc(_fAuth.currentUser!.uid).set({
         "first_name": firstName,
         "last_name": lastName,
@@ -342,9 +397,9 @@ class DatabaseRepository {
     List<ProductModel> productCategories = [];
 
     try {
-      if (kDebugMode) {
-        print("Fetching the categories");
-      }
+      // if (kDebugMode) {
+      //   print("Fetching the categories");
+      // }
       final QuerySnapshot querySnapShot =
           await _fDatabase.collection("categories").get();
       for (var document in querySnapShot.docs) {
@@ -352,7 +407,9 @@ class DatabaseRepository {
             document.data() as Map<String, dynamic>;
 
         final ProductModel product = ProductModel(
+          documentID: document.id,
           title: data["title"],
+
           imageUrl: data['image_url'],
           documentSnapshot: null,
         );
@@ -363,9 +420,9 @@ class DatabaseRepository {
       // }
       return productCategories;
     } catch (e) {
-      if (kDebugMode) {
-        print("Error fetching the categories $e");
-      }
+      // if (kDebugMode) {
+      //   print("Error fetching the categories $e");
+      // }
       rethrow;
     }
   }

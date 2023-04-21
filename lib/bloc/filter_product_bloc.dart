@@ -25,7 +25,7 @@ class FilterProductBloc extends Bloc<FilterProductEvent, FilterProductState> {
 
   void _filterProduct(
       FilterProduct event, Emitter<FilterProductState> emitter) {
-    print ("filtering producs ${event.products}");
+    // print ("filtering producs ${event.products}");
     if (event.status == FilterProductStatus.success) {
       emit(state.copyWith(
           status: FilterProductStatus.success, products: event.products));

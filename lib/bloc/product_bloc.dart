@@ -34,19 +34,19 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         ));
       } else {
         if (event.products.isEmpty) {
-          if (kDebugMode){
-            print ("latest products has reached maximum");
-          }
+          // if (kDebugMode){
+          //   print ("latest products has reached maximum");
+          // }
           emit(state.copyWith(hasReachedMax: true));
         } else {
-          if (kDebugMode){
-            print ("adding to latest products");
-          }
+          // if (kDebugMode){
+          //   print ("adding to latest products");
+          // }
           emit(state.copyWith(
             status: ProductStatus.success,
             products: List.of(state.products)
               ..addAll(event.products)
-              ..toSet(),
+              ,
             hasReachedMax: false,
           ));
         }

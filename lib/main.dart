@@ -1,4 +1,4 @@
-import 'package:ecommerce_dummy_app/repositories/database_repository.dart';
+import 'package:ecommerce_dummy_app/bloc/favorite_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +14,7 @@ import 'bloc/user_info_bloc.dart';
 import 'features/onboarding/splash_screen.dart';
 import 'firebase_options.dart';
 import 'repositories/authentication_respository.dart';
+import 'repositories/database_repository.dart';
 import 'repositories/user_repository.dart';
 import 'utils/appstyles.dart';
 
@@ -96,8 +97,11 @@ class _MyAppState extends State<MyApp> {
                 FilterProductBloc(databaseRepository: _databaseRepository),
           ),
           BlocProvider<FilterOptionsBloc>(
+            create: (BuildContext context) => FilterOptionsBloc(),
+          ),
+          BlocProvider<FavoriteBloc>(
             create: (BuildContext context) =>
-            FilterOptionsBloc(),
+                FavoriteBloc(databaseRepository: _databaseRepository),
           ),
         ],
         child: const Home(),

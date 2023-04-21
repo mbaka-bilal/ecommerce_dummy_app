@@ -39,7 +39,7 @@ class _SignUpSuccessfullyScreenState extends State<SignUpSuccessfullyScreen> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              print("go back");
+              // print("go back");
               Navigator.of(context).pop();
             },
             icon: const Icon(

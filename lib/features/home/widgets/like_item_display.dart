@@ -1,19 +1,28 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ecommerce_dummy_app/bloc/favorite_bloc.dart';
+import 'package:ecommerce_dummy_app/repositories/database_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../utils/appstyles.dart';
-
 
 class LikeItemDisplay extends StatelessWidget {
   /// Widget to show the item with only the like available
   /// but no add to cart
-  const LikeItemDisplay({Key? key, required this.title, required this.amount, required this.rating, required this.imageLink}) : super(key: key);
+  const LikeItemDisplay({Key? key,
+    required this.title,
+    required this.amount,
+    required this.rating,
+    required this.imageLink,
+    required this.documentID})
+      : super(key: key);
 
-  final String title;
+  final String? title;
   final int amount;
   final double rating;
   final String imageLink;
+  final String documentID;
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +36,7 @@ class LikeItemDisplay extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
-            mainAxisAlignment:
-            MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
@@ -43,23 +51,39 @@ class LikeItemDisplay extends StatelessWidget {
                         //   margin: EdgeInsets.all(10),
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         decoration: BoxDecoration(
-                            borderRadius:
-                            BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(12),
                             color: AppColors.gray07),
-                        child:
-                        CachedNetworkImage(
+                        child: CachedNetworkImage(
                           imageUrl: imageLink,
                         )),
                     Align(
                         alignment: Alignment.topRight,
-                        child: InkWell(
-                          onTap: () {
-                            //TODO add to favorites
+                        child: BlocBuilder<FavoriteBloc, List<dynamic> >(
+
+                          builder: (context, state) {
+                            print ("state changed");
+                            return InkWell(
+                                onTap: () async {
+                                  if (state.contains(documentID)){
+                                    context.read<FavoriteBloc>().removeDoc(documentID);
+                                    await DatabaseRepository().updateFavoriteProducts(state, FirebaseAuth.instance.currentUser!.uid);
+                                  }else{
+                                    context.read<FavoriteBloc>().addDoc(documentID);
+                                    await DatabaseRepository().updateFavoriteProducts(state, FirebaseAuth.instance.currentUser!.uid);
+                                  }
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 3, right: 5),
+                                  child: Icon(
+                                    Icons.favorite,
+                                    color: (state.contains(documentID))
+                                        ? Colors.red
+                                        : AppColors.gray04,
+                                  ),
+                                ),
+                              );
                           },
-                          child: const Padding(
-                            padding: EdgeInsets.all(5.0),
-                            child: Icon(Icons.favorite,color: Colors.red,),
-                          ),
                         ))
                   ],
                 ),
@@ -68,8 +92,7 @@ class LikeItemDisplay extends StatelessWidget {
                 height: 10,
               ),
               Column(
-                crossAxisAlignment:
-                CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
@@ -83,69 +106,56 @@ class LikeItemDisplay extends StatelessWidget {
                       ),
                       Text(
                         "$rating",
-                        style: Theme.of(context)
+                        style: Theme
+                            .of(context)
                             .textTheme
                             .bodySmall!
-                            .copyWith(
-                            color:
-                            AppColors.gray03),
+                            .copyWith(color: AppColors.gray03),
                       ),
-
                     ],
                   )
                 ],
               ),
-
-                  const SizedBox(
-                    height: 3,
-                  ),
-                  Text(
-                    title,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(
-                        fontSize: 12,
-                        color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: 3,
-                  ),
-                  SizedBox(
-                    // color: Colors.blue,
-                    width: double.infinity,
-                    child: Row(
+              const SizedBox(
+                height: 3,
+              ),
+              Text(
+                (title == null) ? " " : title!,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(fontSize: 12, color: Colors.black),
+              ),
+              const SizedBox(
+                height: 3,
+              ),
+              SizedBox(
+                // color: Colors.blue,
+                  width: double.infinity,
+                  child: Row(
                       mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           "N$amount",
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
+                          style: Theme
+                              .of(context)
                               .textTheme
                               .bodyMedium!
-                              .copyWith(
-                              color: AppColors.blue),
+                              .copyWith(color: AppColors.blue),
                         ),
-
                         InkWell(
                           onTap: () {},
                           child: Container(
                             decoration: BoxDecoration(
-                              color: AppColors.blue,
-                              borderRadius: BorderRadius.circular(360)
-                            ),
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.white
-                            ),
+                                color: AppColors.blue,
+                                borderRadius: BorderRadius.circular(360)),
+                            child: Icon(Icons.add, color: Colors.white),
                           ),
                         ),
-]
-                  )
-
-              ),
+                      ])),
             ],
           ),
         ),

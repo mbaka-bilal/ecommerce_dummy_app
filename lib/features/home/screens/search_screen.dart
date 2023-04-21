@@ -39,7 +39,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
     if (!_focusNode.hasFocus && widget.searchFieldSelected) {
       _focusNode.requestFocus();
     }
-    print("the filter is ${context.read<FilterOptionsBloc>().state}");
+    // print("the filter is ${context.read<FilterOptionsBloc>().state}");
   }
 
   @override
@@ -156,6 +156,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                               return LikeItemDisplay(
                                   title: state.products[index].title,
                                   amount: state.products[index].amount!,
+                                  documentID: state.products[index].documentID,
                                   rating: double.tryParse(
                                       "${state.products[index].rating}")!,
                                   imageLink: state.products[index].imageUrl);

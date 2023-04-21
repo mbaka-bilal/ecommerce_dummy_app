@@ -1,7 +1,8 @@
+import 'package:ecommerce_dummy_app/repositories/database_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 
 import '../../bloc/authentication_bloc.dart';
 import '../../bloc/authentication_state.dart';
@@ -14,8 +15,6 @@ import '../../utils/app_images.dart';
 import '../../utils/appstyles.dart';
 
 import 'onboarding_screen.dart';
-
-
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -37,9 +36,11 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    RepositoryProvider.of<
-        AuthenticationRepository>(context).tryGetUser();
-
+    RepositoryProvider.of<AuthenticationRepository>(context).tryGetUser();
+    if (FirebaseAuth.instance.currentUser != null) {
+      RepositoryProvider.of<DatabaseRepository>(context)
+          .favoriteProducts(FirebaseAuth.instance.currentUser!.uid);
+    }
   }
 
   @override
@@ -48,13 +49,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.blue,
-      body:
-      BlocListener<AuthenticationBloc, AuthenticationState>(
+      body: BlocListener<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
           switch (state.authenticationModel.authenticationStatus) {
             case AuthenticationStatus.authenticated:
-              RepositoryProvider.of<
-                  UserRepository>(context).fetchUser();
+              RepositoryProvider.of<UserRepository>(context).fetchUser();
               nextScreen(const DashBoard());
               break;
             case AuthenticationStatus.unauthenticated:
@@ -65,8 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
               break;
           }
         },
-        child:
-        Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

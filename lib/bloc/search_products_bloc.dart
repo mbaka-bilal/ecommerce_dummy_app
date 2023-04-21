@@ -33,7 +33,7 @@ class SearchProductBloc extends Bloc<SearchProductsEvent, SearchProductState> {
           maxReached: false,
         ));
       } else {
-          print ("the documents are ${event.products}");
+          // print ("the documents are ${event.products}");
           emit(state.copyWith(
             searchString: event.searchString,
             status: SearchProductsEnum.success,
@@ -43,7 +43,7 @@ class SearchProductBloc extends Bloc<SearchProductsEvent, SearchProductState> {
 
       }
     } catch (e) {
-      print ("error fetching search ${e}");
+      // print ("error fetching search ${e}");
       emit(state.copyWith(status: SearchProductsEnum.failed));
     }
   }

@@ -48,7 +48,7 @@ class AuthenticationRepository {
             statusMessage: "Access granted, \n Don't shop responsibly"));
       });
     } catch (e) {
-      print("could not login with google $e");
+      // print("could not login with google $e");
       await Future.delayed(
           const Duration(milliseconds: 300),
           () => _controller.add(AuthenticationModel(
@@ -81,7 +81,7 @@ class AuthenticationRepository {
                     "Email not verified, please verify your email")));
       }
     } on FirebaseAuthException catch (e) {
-      print("caught sign in Error signin in $e");
+      // print("caught sign in Error signin in $e");
       switch (e.code) {
         case 'network-request-failed':
           await Future.delayed(
@@ -113,7 +113,7 @@ class AuthenticationRepository {
           break;
       }
     } catch (e) {
-      print("Uncaught sign in error $e");
+      // print("Uncaught sign in error $e");
       await Future.delayed(const Duration(milliseconds: 300), () {
         _controller.add(AuthenticationModel(
             authenticationStatus: AuthenticationStatus.loginError,
@@ -133,7 +133,7 @@ class AuthenticationRepository {
       statusMessage: "Creating your account....",
     ));
     try {
-      print("tring to sign up");
+      // print("tring to sign up");
 
       await _fAuth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -144,7 +144,7 @@ class AuthenticationRepository {
               authenticationStatus: AuthenticationStatus.signUpSuccessfully,
               statusMessage: "Account created, Welcome!!")));
     } on FirebaseAuthException catch (e) {
-      print("Error signin up $e");
+      // print("Error signin up $e");
       switch (e.code) {
         case 'email-already-in-use':
           await Future.delayed(
@@ -169,7 +169,7 @@ class AuthenticationRepository {
           break;
       }
     } catch (e) {
-      print("uncaught error $e");
+      // print("uncaught error $e");
       await Future.delayed(
           const Duration(milliseconds: 300),
           () => _controller.add(AuthenticationModel(
@@ -180,7 +180,7 @@ class AuthenticationRepository {
 
   Future<void> sendUserConfirmationLinkToEmail(User user) async {
     try {
-      print("sending confirmation link");
+      // print("sending confirmation link");
       await Future.delayed(
           const Duration(milliseconds: 300),
           () => _controller.add(AuthenticationModel(
@@ -195,7 +195,7 @@ class AuthenticationRepository {
                   AuthenticationStatus.userConfirmationLinkSent,
               statusMessage: "Success")));
     } on FirebaseAuthException catch (e) {
-      print("error sending the link to email $e");
+      // print("error sending the link to email $e");
       switch (e.code) {
         case 'too-many-requests':
           await Future.delayed(
@@ -223,7 +223,7 @@ class AuthenticationRepository {
           break;
       }
     } catch (e) {
-      print("error sending the link to email $e");
+      // print("error sending the link to email $e");
       await Future.delayed(
           const Duration(milliseconds: 300),
           () => _controller.add(AuthenticationModel(
@@ -235,7 +235,7 @@ class AuthenticationRepository {
 
   Future<void> resetPassword(String email) async {
     try {
-      print("begin resetting password");
+      // print("begin resetting password");
       await Future.delayed(
           const Duration(milliseconds: 300),
           () => _controller.add(AuthenticationModel(
@@ -250,7 +250,7 @@ class AuthenticationRepository {
                   AuthenticationStatus.resettingPasswordSuccessfully,
               statusMessage: "Success")));
     } on FirebaseAuthException catch (e) {
-      print("error resetting password $e");
+      // print("error resetting password $e");
       switch (e.code) {
         case 'too-many-requests':
           await Future.delayed(
@@ -278,7 +278,7 @@ class AuthenticationRepository {
           break;
       }
     } catch (e) {
-      print("uncaught error when reseting password $e");
+      // print("uncaught error when reseting password $e");
       await Future.delayed(
           const Duration(milliseconds: 300),
           () => _controller.add(AuthenticationModel(
@@ -289,7 +289,7 @@ class AuthenticationRepository {
 
   Future<void> logOut() async {
     try {
-      print("logging out the user");
+      // print("logging out the user");
       await _fAuth.signOut();
       await Future.delayed(
           const Duration(milliseconds: 300),
@@ -298,7 +298,7 @@ class AuthenticationRepository {
               )));
 
     } catch (e) {
-      print("unable to sign out user $e");
+      // print("unable to sign out user $e");
       await Future.delayed(
           const Duration(milliseconds: 300),
           () => _controller.add(AuthenticationModel(
