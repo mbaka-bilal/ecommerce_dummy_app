@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ecommerce_dummy_app/bloc/cart_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../bloc/cart_bloc.dart';
 import '../../../bloc/cart_event.dart';
 import '../../../bloc/cart_state.dart' as cart_state;
 import '../../../utils/app_images.dart';
@@ -122,7 +122,7 @@ class CartItem extends StatelessWidget {
                               imageUrl: imageUrl,
                               fit: BoxFit.fill,
                             ))),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Column(
@@ -135,7 +135,7 @@ class CartItem extends StatelessWidget {
                               .bodySmall!
                               .copyWith(fontSize: 16),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Row(
@@ -217,7 +217,7 @@ class CartItem extends StatelessWidget {
                         color: Colors.red,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Text(
@@ -249,7 +249,7 @@ class TotalItemCount extends StatelessWidget {
       padding: const EdgeInsets.only(top: 50.0, bottom: 20),
       child: Card(
         child: Container(
-          padding: EdgeInsets.all(15),
+          padding: const EdgeInsets.all(15),
           height: 100,
           color: Colors.white,
           child: Row(
@@ -265,7 +265,7 @@ class TotalItemCount extends StatelessWidget {
                           color: AppColors.gray,
                         ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Text(

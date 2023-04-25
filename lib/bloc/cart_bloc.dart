@@ -51,8 +51,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     for (var i = 0; i < items.length; i++) {
       var element = items[i];
       if (element.itemName == event.item.itemName) {
-
-        if (element.itemNumber == 1){
+        if (element.itemNumber == 1) {
           // if there is only 1 item left in the cart, remove it from the cart
           add(CartDelete(item: element));
           return;
@@ -70,26 +69,26 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
     }
     // emit(state.copyWith(
-        // items: List.of(state.items)..add(event.item),
-        // totalItems: null,
-        // totalCost: null));
+    // items: List.of(state.items)..add(event.item),
+    // totalItems: null,
+    // totalCost: null));
   }
 
   void _deleteFromCart(CartDelete event, Emitter<CartState> emit) {
     List<CartItem> items = List.of(state.items);
 
-    for (var i = 0; i < items.length; i++){
+    for (var i = 0; i < items.length; i++) {
       var element = items[i];
 
       if (element.itemName == event.item.itemName) {
         state.items.remove(element);
-        emit(state.copyWith(items: List.of(state.items),
+        emit(state.copyWith(
+            items: List.of(state.items),
             totalItems: state.totalItems - element.itemNumber,
-            totalCost: state.totalCost - (element.amount * element.itemNumber)));
+            totalCost:
+                state.totalCost - (element.amount * element.itemNumber)));
         return;
       }
-
-
     }
   }
 }
