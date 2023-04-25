@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../utils/app_images.dart';
 import '../../../utils/appstyles.dart';
+import '../../cart/screens/cart.dart';
 import '../../home/screens/home.dart';
 import '../../profile/screens/user_profile.dart';
 
@@ -93,18 +94,7 @@ class _DashBoardState extends State<DashBoard> {
 
 
 
-class CartScreen extends StatelessWidget {
-  const CartScreen({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text("Cart"),
-      ),
-    );
-  }
-}
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({Key? key}) : super(key: key);

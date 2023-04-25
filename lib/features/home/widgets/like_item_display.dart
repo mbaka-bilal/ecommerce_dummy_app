@@ -1,21 +1,26 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ecommerce_dummy_app/bloc/cart_bloc.dart';
+import 'package:ecommerce_dummy_app/bloc/cart_event.dart';
 import 'package:ecommerce_dummy_app/bloc/favorite_bloc.dart';
+
 import 'package:ecommerce_dummy_app/repositories/database_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../bloc/cart_state.dart' as carts;
 import '../../../utils/appstyles.dart';
 
 class LikeItemDisplay extends StatelessWidget {
   /// Widget to show the item with only the like available
   /// but no add to cart
-  const LikeItemDisplay({Key? key,
-    required this.title,
-    required this.amount,
-    required this.rating,
-    required this.imageLink,
-    required this.documentID})
+  const LikeItemDisplay(
+      {Key? key,
+      required this.title,
+      required this.amount,
+      required this.rating,
+      required this.imageLink,
+      required this.documentID})
       : super(key: key);
 
   final String? title;
@@ -58,31 +63,42 @@ class LikeItemDisplay extends StatelessWidget {
                         )),
                     Align(
                         alignment: Alignment.topRight,
-                        child: BlocBuilder<FavoriteBloc, List<dynamic> >(
-
+                        child: BlocBuilder<FavoriteBloc, List<dynamic>>(
                           builder: (context, state) {
-                            print ("state changed");
+                            print("state changed");
                             return InkWell(
-                                onTap: () async {
-                                  if (state.contains(documentID)){
-                                    context.read<FavoriteBloc>().removeDoc(documentID);
-                                    await DatabaseRepository().updateFavoriteProducts(state, FirebaseAuth.instance.currentUser!.uid);
-                                  }else{
-                                    context.read<FavoriteBloc>().addDoc(documentID);
-                                    await DatabaseRepository().updateFavoriteProducts(state, FirebaseAuth.instance.currentUser!.uid);
-                                  }
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 3, right: 5),
-                                  child: Icon(
-                                    Icons.favorite,
-                                    color: (state.contains(documentID))
-                                        ? Colors.red
-                                        : AppColors.gray04,
-                                  ),
+                              onTap: () async {
+                                if (state.contains(documentID)) {
+                                  context
+                                      .read<FavoriteBloc>()
+                                      .removeDoc(documentID);
+                                  await DatabaseRepository()
+                                      .updateFavoriteProducts(
+                                          state,
+                                          FirebaseAuth
+                                              .instance.currentUser!.uid);
+                                } else {
+                                  context
+                                      .read<FavoriteBloc>()
+                                      .addDoc(documentID);
+                                  await DatabaseRepository()
+                                      .updateFavoriteProducts(
+                                          state,
+                                          FirebaseAuth
+                                              .instance.currentUser!.uid);
+                                }
+                              },
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 3, right: 5),
+                                child: Icon(
+                                  Icons.favorite,
+                                  color: (state.contains(documentID))
+                                      ? Colors.red
+                                      : AppColors.gray04,
                                 ),
-                              );
+                              ),
+                            );
                           },
                         ))
                   ],
@@ -106,8 +122,7 @@ class LikeItemDisplay extends StatelessWidget {
                       ),
                       Text(
                         "$rating",
-                        style: Theme
-                            .of(context)
+                        style: Theme.of(context)
                             .textTheme
                             .bodySmall!
                             .copyWith(color: AppColors.gray03),
@@ -121,8 +136,7 @@ class LikeItemDisplay extends StatelessWidget {
               ),
               Text(
                 (title == null) ? " " : title!,
-                style: Theme
-                    .of(context)
+                style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
                     .copyWith(fontSize: 12, color: Colors.black),
@@ -131,7 +145,7 @@ class LikeItemDisplay extends StatelessWidget {
                 height: 3,
               ),
               SizedBox(
-                // color: Colors.blue,
+                  // color: Colors.blue,
                   width: double.infinity,
                   child: Row(
                       mainAxisSize: MainAxisSize.max,
@@ -140,14 +154,20 @@ class LikeItemDisplay extends StatelessWidget {
                         Text(
                           "N$amount",
                           overflow: TextOverflow.ellipsis,
-                          style: Theme
-                              .of(context)
+                          style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
                               .copyWith(color: AppColors.blue),
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            context.read<CartBloc>().add(CartAdd(
+                                    item: carts.CartItem(
+                                  amount: amount,
+                                  itemName: title!,
+                                  imageUrl: imageLink,
+                                )));
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                                 color: AppColors.blue,

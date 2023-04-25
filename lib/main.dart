@@ -1,3 +1,4 @@
+import 'package:ecommerce_dummy_app/bloc/cart_bloc.dart';
 import 'package:ecommerce_dummy_app/bloc/favorite_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -102,6 +103,10 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<FavoriteBloc>(
             create: (BuildContext context) =>
                 FavoriteBloc(databaseRepository: _databaseRepository),
+          ),
+          BlocProvider<CartBloc>(
+            create: (BuildContext context) =>
+                CartBloc(),
           ),
         ],
         child: const Home(),
