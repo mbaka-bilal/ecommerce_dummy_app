@@ -13,6 +13,9 @@ class MyFormField extends StatefulWidget {
     required this.textEditingController,
     required this.formFieldValidator,
     this.formKey,
+    this.maxLines,
+    this.minLines,
+    this.expands = false,
     this.keyboardType,
   }) : super(key: key);
 
@@ -23,6 +26,9 @@ class MyFormField extends StatefulWidget {
   final FormFieldValidator<String?> formFieldValidator;
   final GlobalKey<FormState>? formKey;
   final TextInputType? keyboardType;
+  final bool expands;
+  final int? maxLines;
+  final int? minLines;
 
   @override
   State<MyFormField> createState() => _MyFormFieldState();
@@ -71,6 +77,10 @@ class _MyFormFieldState extends State<MyFormField> {
     return Stack(
       children: [
         TextFormField(
+          textAlignVertical: TextAlignVertical.top,
+          expands: widget.expands,
+          maxLines: (widget.expands) ? null : widget.maxLines,
+          minLines: (widget.expands) ? null : widget.minLines,
           keyboardType: widget.keyboardType,
           validator: widget.formFieldValidator,
           focusNode: focusNode,

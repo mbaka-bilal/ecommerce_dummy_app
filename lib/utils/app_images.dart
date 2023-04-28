@@ -24,4 +24,8 @@ class AppImages {
   static const faceMask = "${basePath}face_mask.svg";
   static const filters = "${basePath}filters.svg";
   static const boxLines = "${basePath}box_lines.svg";
+  static const masterCard = "${basePath}master_card.svg";
+  static const visaCard = "${basePath}visa_card.svg";
+  static const masterCardPng = "${basePath}master_card.png";
+  static const visaCardPng = "${basePath}visa_card.png";
 }

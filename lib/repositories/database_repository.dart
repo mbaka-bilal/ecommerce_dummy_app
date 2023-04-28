@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
 import '../models/product_model.dart';
 import '../bloc/filter_product_state.dart';
@@ -36,21 +38,23 @@ class DatabaseRepository {
     yield* _favoriteProductController.stream;
   }
 
-  void favoriteProducts(String id){
+  void favoriteProducts(String id) {
     _fDatabase.collection("users").doc(id).snapshots().listen((event) {
-      final Map<String, dynamic>? snapShot =
-          event.data();
-      if (snapShot!["favorites"] == null){
+      final Map<String, dynamic>? snapShot = event.data();
+      if (snapShot!["favorites"] == null) {
         _favoriteProductController.add([]);
-      }else{
-
+      } else {
         _favoriteProductController.add(snapShot["favorites"]);
       }
     });
   }
 
-  Future<void> updateFavoriteProducts(List<dynamic> favorites,String id) async {
-    await _fDatabase.collection("users").doc(id).update({"favorites": favorites});
+  Future<void> updateFavoriteProducts(
+      List<dynamic> favorites, String id) async {
+    await _fDatabase
+        .collection("users")
+        .doc(id)
+        .update({"favorites": favorites});
   }
 
   void filterProduct(
@@ -91,7 +95,7 @@ class DatabaseRepository {
                 data["amount"] >= priceRange &&
                 data["rating"] >= rating) {
               products.add(ProductModel(
-                documentID: element.id,
+                  documentID: element.id,
                   description: data["description"],
                   rating: data["rating"],
                   amount: data["amount"],
@@ -271,7 +275,12 @@ class DatabaseRepository {
 
     try {
       if (startAfterDocument == null) {
-        _fDatabase.collection("items").orderBy("title").limit(20).snapshots().listen((event) {
+        _fDatabase
+            .collection("items")
+            .orderBy("title")
+            .limit(20)
+            .snapshots()
+            .listen((event) {
           final List<QueryDocumentSnapshot<Map<String, dynamic>>> snapShot =
               event.docs;
           for (var element in snapShot) {
@@ -409,7 +418,6 @@ class DatabaseRepository {
         final ProductModel product = ProductModel(
           documentID: document.id,
           title: data["title"],
-
           imageUrl: data['image_url'],
           documentSnapshot: null,
         );
@@ -435,6 +443,68 @@ class DatabaseRepository {
           .where("category", isEqualTo: categoryName)
           .count();
       return await database.get(source: AggregateSource.server);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> createDatabaseAndTable(String databaseName) async {
+    try {
+      print("creating database");
+      var databasePath = await getDatabasesPath();
+      String path = join(databasePath, databaseName);
+
+      Database database = await openDatabase(
+        path,
+        version: 1,
+      );
+      await database.execute("CREATE TABLE address ("
+          "name TEXT PRIMARY KEY NOT NULL,"
+          "phone_number TEXT NOT NULL"
+          ")");
+    } catch (e) {
+      print("error $e");
+      rethrow;
+    }
+  }
+
+  Future<void> addAddressToDatabase(
+      String databaseName, String address, String phoneNumber) async {
+    try {
+      var databasePath = await getDatabasesPath();
+      String path = join(databasePath, databaseName);
+      Database database = await openDatabase(path);
+
+      await database.insert("address", {
+        "name": address,
+        "phone_number": phoneNumber,
+      });
+    } catch (e) {
+
+      rethrow;
+    }
+  }
+
+  Future<List<Map<String,dynamic>>> fetchAddresses(String databaseName) async {
+    try{
+      var databasePath = await getDatabasesPath();
+      String path = join(databasePath, databaseName);
+      Database database = await openDatabase(path);
+
+      final list = await database.query("address");
+      return list;
+    }catch (e){
+      rethrow;
+    }
+  }
+
+  Future<bool> checkIfDatabaseExists(String dbName) async {
+    var databasePath = await getDatabasesPath();
+    String path = join(databasePath, dbName);
+
+    try {
+      bool value = await databaseExists(path);
+      return value;
     } catch (e) {
       rethrow;
     }

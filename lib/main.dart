@@ -1,10 +1,10 @@
-import 'package:ecommerce_dummy_app/bloc/cart_bloc.dart';
-import 'package:ecommerce_dummy_app/bloc/favorite_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bloc/authentication_bloc.dart';
+import 'bloc/cart_bloc.dart';
+import 'bloc/favorite_bloc.dart';
 import 'bloc/filter_options.dart';
 import 'bloc/filter_product_bloc.dart';
 import 'bloc/form_state_cubit.dart';
@@ -49,7 +49,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    // _authenticationRepository.dispose();
     super.dispose();
   }
 

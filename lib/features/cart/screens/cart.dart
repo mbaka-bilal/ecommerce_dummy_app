@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ecommerce_dummy_app/features/checkout/screens/checkout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../bloc/cart_bloc.dart';
 import '../../../bloc/cart_event.dart';
@@ -12,6 +12,7 @@ import '../../../utils/appstyles.dart';
 import '../../../widgets/mybutton.dart';
 
 class CartScreen extends StatelessWidget {
+  ///The cart screen
   const CartScreen({Key? key}) : super(key: key);
 
   @override
@@ -61,7 +62,11 @@ class CartScreen extends StatelessWidget {
                             buttonColor: AppColors.blue,
                             width: double.infinity,
                             height: 60,
-                            function: () {},
+                            function: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      const CheckOutScreen()));
+                            },
                           )
                         ],
                       )
@@ -143,7 +148,7 @@ class CartItem extends StatelessWidget {
                             InkWell(
                               onTap: () {
                                 context.read<CartBloc>().add(CartRemove(
-                                    item: cart_state.CartItem(
+                                        item: cart_state.CartItem(
                                       amount: amount,
                                       itemName: itemName,
                                       imageUrl: imageUrl,
@@ -206,7 +211,7 @@ class CartItem extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         context.read<CartBloc>().add(CartDelete(
-                            item: cart_state.CartItem(
+                                item: cart_state.CartItem(
                               amount: amount,
                               itemName: itemName,
                               imageUrl: imageUrl,
