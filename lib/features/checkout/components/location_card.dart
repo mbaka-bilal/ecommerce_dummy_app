@@ -5,10 +5,10 @@ import '../../../utils/appstyles.dart';
 class LocationCard extends StatelessWidget {
   const LocationCard(
       {Key? key,
-        // required this.title,
-        required this.address,
-        required this.isSelected,
-        required this.mobileNumber})
+      // required this.title,
+      required this.address,
+      required this.isSelected,
+      required this.mobileNumber})
       : super(key: key);
 
   // final String title;
@@ -98,16 +98,16 @@ class LocationCard extends StatelessWidget {
                   },
                   child: Row(
                       children: List.generate(
-                        3,
-                            (index) => const Padding(
-                          padding: EdgeInsets.only(right: 5),
-                          // padding: const EdgeInsets.all(8.0),
-                          child: CircleAvatar(
-                            radius: 3,
-                            backgroundColor: AppColors.gray04,
-                          ),
-                        ),
-                      )),
+                    3,
+                    (index) => const Padding(
+                      padding: EdgeInsets.only(right: 5),
+                      // padding: const EdgeInsets.all(8.0),
+                      child: CircleAvatar(
+                        radius: 3,
+                        backgroundColor: AppColors.gray04,
+                      ),
+                    ),
+                  )),
                 ))
           ],
         ),

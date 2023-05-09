@@ -4,21 +4,15 @@ import '../../../utils/app_images.dart';
 import '../../../utils/appstyles.dart';
 import '../../../utils/app_utils.dart';
 
-
-enum CardTypes {
-  masterCard,
-  visaCard,
-}
-
 class DebitCard extends StatelessWidget {
   const DebitCard({
     Key? key,
-    required this.cardType,
+    // required this.cardType,
     required this.cardNumber,
     required this.isSelected,
   }) : super(key: key);
 
-  final CardTypes cardType;
+  // final ImagePath imagePath;
   final String cardNumber;
   final bool isSelected;
 
@@ -67,4 +61,3 @@ class DebitCard extends StatelessWidget {
     );
   }
 }
-

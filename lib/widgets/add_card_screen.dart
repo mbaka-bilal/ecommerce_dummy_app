@@ -1,27 +1,78 @@
-import 'package:ecommerce_dummy_app/repositories/database_repository.dart';
 import 'package:flutter/material.dart';
 
+import '../repositories/database_repository.dart';
 import '../utils/app_utils.dart';
 import '../utils/appstyles.dart';
 import '../utils/constants.dart';
-import '../widgets/my_form.dart';
 import '../widgets/mybutton.dart';
 import 'custom_form.dart';
 
-class AddCardScreen extends StatelessWidget {
-  const AddCardScreen({Key? key}) : super(key: key);
+class AddCardScreen extends StatefulWidget {
+  const AddCardScreen({Key? key, required this.callBack}) : super(key: key);
+
+  final Function callBack;
 
   @override
-  Widget build(BuildContext context) {
-    final cardNumberController = TextEditingController();
-    final monthController = TextEditingController();
-    final yearController = TextEditingController();
-    final cvvController = TextEditingController();
-    final cardHolderController = TextEditingController();
-    final databaseRepository = DatabaseRepository();
+  State<AddCardScreen> createState() => _AddCardScreenState();
+}
 
-    final monthFocusNode = FocusNode();
+class _AddCardScreenState extends State<AddCardScreen> {
+  final cardNumberController = TextEditingController();
+  final monthController = TextEditingController();
+  final yearController = TextEditingController();
+  final cvvController = TextEditingController();
+  final cardHolderController = TextEditingController();
+  final databaseRepository = DatabaseRepository();
+  final monthFocusNode = FocusNode();
 
+  Future<void> addCardToDatabase() async {
+    var snackBar = ScaffoldMessenger.of(context);
+
+    try {
+      if (cardHolderController.text.trim().isEmpty ||
+          monthController.text.trim().isEmpty ||
+          yearController.text.trim().isEmpty ||
+          cvvController.text.trim().isEmpty ||
+          cardNumberController.text.trim().isEmpty) {
+        throw EmptyFieldException();
+      }
+
+      await databaseRepository.addRecordToTable(
+          databaseName: dtb_user,
+          tableName: tbl_cards,
+          data: {
+            "card_number": cardNumberController.text.trim(),
+            "expiration_month": monthController.text.trim(),
+            "expiration_year": yearController.text.trim(),
+            "cvv": cvvController.text.trim(),
+            "card_holder": cardHolderController.text.trim(),
+          });
+      snackBar.showSnackBar(const SnackBar(
+          duration: Duration(seconds: 2),
+          content: Text("Successfully added card")));
+      widget.callBack();
+    } catch (e) {
+      String error = e.toString();
+      print("error cauth $e");
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: const Duration(seconds: 2),
+        content: Text((error.contains("UNIQUE constraint failed"))
+            ? "Card already exists"
+            : "Error could not add to database"),
+      ));
+    }
+  }
+
+  void initialize() async {
+    if (!(await databaseRepository.checkIfDatabaseExists(dtb_user))) {
+      await databaseRepository.createDatabaseAndTable(dtb_user, cardTable);
+    }
+    if (!await databaseRepository.checkIfTableExists(
+        tableName: tbl_cards, databaseName: dtb_user)) {
+      await databaseRepository.createTable(
+          databaseName: dtb_user, tableInfo: cardTable);
+    }
     monthFocusNode.addListener(() {
       if (!(monthFocusNode.hasFocus) &&
           monthController.text.trim().isNotEmpty) {
@@ -30,7 +81,16 @@ class AddCardScreen extends StatelessWidget {
         }
       }
     });
+  }
 
+  @override
+  void initState() {
+    super.initState();
+    initialize();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -156,48 +216,7 @@ class AddCardScreen extends StatelessWidget {
                 height: 50,
                 buttonColor: AppColors.blue,
                 function: () async {
-                  //TODO move all this to a database called userInfo
-                  var snackBar = ScaffoldMessenger.of(context);
-
-                  try {
-                    if (cardHolderController.text.trim().isEmpty ||
-                        monthController.text.trim().isEmpty ||
-                        yearController.text.trim().isEmpty ||
-                        cvvController.text.trim().isEmpty ||
-                        cardNumberController.text.trim().isEmpty) {
-                      throw EmptyFieldException();
-                    }
-                    if (await databaseRepository
-                        .checkIfDatabaseExists(dtb_user)) {
-                      await databaseRepository.addRecordToTable(
-                          databaseName: dtb_user,
-                          tableName: tbl_cards,
-                          data: {
-                            "card_number": cardNumberController.text.trim(),
-                            "expiration_month": monthController.text.trim(),
-                            "expiration_year": yearController.text.trim(),
-                            "cvv": cvvController.text.trim(),
-                            "card_holder": cardHolderController.text.trim(),
-                          });
-                      snackBar.showSnackBar(const SnackBar(
-                        duration: Duration(seconds: 2),
-                        content: Text("Successfully added card")));
-                    } else {
-                      await databaseRepository.createDatabaseAndTable(
-                          dtb_user, cardTable);
-
-                    }
-                  } catch (e) {
-                    String error = e.toString();
-                    print ("error cauth $e");
-
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      duration: const Duration(seconds: 2),
-                      content: Text((error.contains("UNIQUE constraint failed"))
-                          ? "Card already exists"
-                          : "Error could not add to database"),
-                    ));
-                  }
+                  await addCardToDatabase();
                 },
               )
             ],

@@ -466,6 +466,28 @@ class DatabaseRepository {
     }
   }
 
+  Future<void> createTable(
+      {required String databaseName, required String tableInfo}) async {
+    var databasePath = await getDatabasesPath();
+    String path = join(databasePath, databaseName);
+    Database database = await openDatabase(path);
+    await database.execute(tableInfo);
+  }
+
+  Future<bool> checkIfTableExists({required String tableName,required String databaseName}) async {
+    var databasePath = await getDatabasesPath();
+    String path = join(databasePath, databaseName);
+    Database database = await openDatabase(path);
+    List<Map<String,dynamic>> count =await database.query('sqlite_master', where: 'name = ?', whereArgs: [tableName]);
+
+    if (count.isNotEmpty){
+      return true;
+    }else{
+      return false;
+    }
+
+  }
+
   Future<void> addRecordToTable(
       {required String databaseName,
       required String tableName,
@@ -497,7 +519,7 @@ class DatabaseRepository {
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchAddresses(
+  Future<List<Map<String, dynamic>>> fetchRecordFromLocalDatabase(
       String databaseName, String tableName) async {
     try {
       var databasePath = await getDatabasesPath();
@@ -510,6 +532,7 @@ class DatabaseRepository {
       rethrow;
     }
   }
+
 
   Future<bool> checkIfDatabaseExists(String dbName) async {
     var databasePath = await getDatabasesPath();

@@ -1,3 +1,4 @@
+import 'package:ecommerce_dummy_app/models/card_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../repositories/database_repository.dart';
@@ -6,7 +7,7 @@ import '../../../utils/constants.dart';
 import '../../../widgets/add_card_screen.dart';
 import '../../../widgets/mybutton.dart';
 import '../components/add_address_dialog.dart';
-import '../components/add_card_dialog.dart';
+import '../components/card_widget.dart';
 import '../components/location_card.dart';
 
 class CheckOutScreen extends StatefulWidget {
@@ -24,6 +25,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   int _chosenAddressIndex = 0;
   int _chosenCardIndex = 0;
   Map<String, dynamic> _chosenAddress = {};
+
+  void refreshScreen() {
+    setState(() {
+
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +100,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
 
               FutureBuilder(
                   future: DatabaseRepository()
-                      .fetchAddresses(dtb_user, tbl_address),
+                      .fetchRecordFromLocalDatabase(dtb_user, tbl_address),
                   builder: (context, snapShot) {
                     if (snapShot.hasData) {
                       final data = snapShot.data as List<Map<String, dynamic>>;
@@ -137,7 +144,9 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   InkWell(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const AddCardScreen()));
+                          builder: (context) => AddCardScreen(
+                            callBack: refreshScreen,
+                          )));
                     },
                     child: Row(
                       children: [
@@ -160,20 +169,45 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 ],
               ),
               const SizedBox(height: bigSpace),
-              ...List.generate(
-                2,
-                (index) => InkWell(
-                    onTap: () {
-                      setState(() {
-                        _chosenCardIndex = index;
-                      });
-                    },
-                    child: DebitCard(
-                      cardType: CardTypes.masterCard,
-                      cardNumber: "121212121212121212",
-                      isSelected: (_chosenCardIndex == index) ? true : false,
-                    )),
+
+              FutureBuilder(
+                future: DatabaseRepository()
+                    .fetchRecordFromLocalDatabase(dtb_user, tbl_cards),
+                builder: (context,snapShot) {
+                  if (snapShot.hasData) {
+                    List<Map<String,dynamic>> cards = snapShot.data as List<Map<String,dynamic>>;
+                    return Column(
+                      children: List.generate(
+                      cards.length,
+                          (index) => InkWell(
+                          onTap: () {
+                            setState(() {
+                              _chosenCardIndex = index;
+                            });
+                          },
+                          child: Builder(
+                            builder: (context) {
+                              final card = CardModel(cardNumber: cards[index]["card_number"],
+                                  cardHolder: cards[index]["card_holder"],
+                                  cardType: "Debit",
+                                  cvv: cards[index]["cvv"],
+                                  expiryMonth: cards[index]["expiration_month"],
+                                  expiryYear: cards[index]["expiration_year"]);
+                              return DebitCard(
+                              // cardType: CardTypes.masterCard,
+                              cardNumber: card.cardNumber,
+                              isSelected: (_chosenCardIndex == index) ? true : false,
+                            );
+                            },
+                          )),
+                    ),
+                    );
+                  }else{
+                    return Container();
+                  }
+                },
               ),
+
               const SizedBox(height: bigSpace),
               Card(
                 child: Container(
