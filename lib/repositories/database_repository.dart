@@ -448,7 +448,8 @@ class DatabaseRepository {
     }
   }
 
-  Future<void> createDatabaseAndTable(String databaseName) async {
+  Future<void> createDatabaseAndTable(
+      String databaseName, String tableInfo) async {
     try {
       print("creating database");
       var databasePath = await getDatabasesPath();
@@ -458,12 +459,24 @@ class DatabaseRepository {
         path,
         version: 1,
       );
-      await database.execute("CREATE TABLE address ("
-          "name TEXT PRIMARY KEY NOT NULL,"
-          "phone_number TEXT NOT NULL"
-          ")");
+      await database.execute(tableInfo);
     } catch (e) {
       print("error $e");
+      rethrow;
+    }
+  }
+
+  Future<void> addRecordToTable(
+      {required String databaseName,
+      required String tableName,
+      required Map<String, dynamic> data}) async {
+    try {
+      var databasePath = await getDatabasesPath();
+      String path = join(databasePath, databaseName);
+      Database database = await openDatabase(path);
+
+      await database.insert(tableName, data);
+    } catch (e) {
       rethrow;
     }
   }
@@ -480,20 +493,20 @@ class DatabaseRepository {
         "phone_number": phoneNumber,
       });
     } catch (e) {
-
       rethrow;
     }
   }
 
-  Future<List<Map<String,dynamic>>> fetchAddresses(String databaseName) async {
-    try{
+  Future<List<Map<String, dynamic>>> fetchAddresses(
+      String databaseName, String tableName) async {
+    try {
       var databasePath = await getDatabasesPath();
       String path = join(databasePath, databaseName);
       Database database = await openDatabase(path);
 
-      final list = await database.query("address");
+      final list = await database.query(tableName);
       return list;
-    }catch (e){
+    } catch (e) {
       rethrow;
     }
   }
@@ -504,6 +517,7 @@ class DatabaseRepository {
 
     try {
       bool value = await databaseExists(path);
+
       return value;
     } catch (e) {
       rethrow;

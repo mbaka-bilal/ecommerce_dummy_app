@@ -1,4 +1,3 @@
-import 'package:ecommerce_dummy_app/repositories/database_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +7,7 @@ import '../../bloc/authentication_bloc.dart';
 import '../../bloc/authentication_state.dart';
 import '../../models/authentication_model.dart';
 import '../../repositories/authentication_respository.dart';
+import '../../repositories/database_repository.dart';
 import '../../repositories/user_repository.dart';
 import '../dashboard/screens/dashboard.dart';
 

@@ -11,6 +11,7 @@ import '../../../../repositories/user_repository.dart';
 import '../../../../utils/app_images.dart';
 import '../../../../utils/appstyles.dart';
 import '../../../../utils/validator.dart';
+import '../../../../widgets/custom_form.dart';
 import '../../../../widgets/my_alert_dialog.dart';
 import '../../../../widgets/my_form.dart';
 import '../../../../widgets/mybutton.dart';
@@ -176,11 +177,7 @@ class LoginScreen extends StatelessWidget {
                             textEditingController: emailController,
                             keyboardType: TextInputType.emailAddress,
                             isPassword: false,
-                            hint: Text("jessicamaria@infomail.com",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(color: Colors.grey)),
+                            hint: "jessicamaria@infomail.com",
                           ),
                           const SizedBox(
                             height: mediumSpace,
@@ -196,20 +193,12 @@ class LoginScreen extends StatelessWidget {
                             formKey: formKey,
                             formFieldValidator: FormValidator.validatePassword,
                             isPassword: true,
+                            // expands: false,
+                            // maxLines: null,
+                            // minLines: null,
                             keyboardType: TextInputType.name,
                             textEditingController: passwordController,
-                            hint: Row(
-                              children: List.generate(
-                                  10,
-                                  (index) => const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 3.0),
-                                        child: CircleAvatar(
-                                          backgroundColor: Colors.grey,
-                                          radius: 5,
-                                        ),
-                                      )),
-                            ),
+                            hint: "*************",
                           ),
                           const SizedBox(
                             height: 10,
