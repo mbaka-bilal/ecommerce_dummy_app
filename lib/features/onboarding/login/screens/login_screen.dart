@@ -151,6 +151,8 @@ class LoginScreen extends StatelessWidget {
                                 text: state.authenticationModel.statusMessage!);
                           });
                       break;
+                    default:
+                      break;
                   }
                 },
                 child: Column(

@@ -41,7 +41,7 @@ class AuthenticationBloc
         emit(AuthenticationState.unAuthenticated());
         break;
       case AuthenticationStatus.authenticated:
-        emit (AuthenticationState.authenticated());
+        emit(AuthenticationState.authenticated());
         // final user = await _tryGetUser();
         // if (user == null) {
         //   emit(AuthenticationState.unAuthenticated());
@@ -104,6 +104,8 @@ class AuthenticationBloc
           event.status.statusMessage!,
         ));
         break;
+      default:
+        break;
     }
   }
 
@@ -114,9 +116,8 @@ class AuthenticationBloc
     _authenticationRepository.logOut();
   }
 
-
-
   final AuthenticationRepository _authenticationRepository;
+
   // final UserRepository _userRepository;
   late StreamSubscription<AuthenticationModel>
       _authenticationStatusSubscription;

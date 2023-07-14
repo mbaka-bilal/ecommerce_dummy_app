@@ -93,6 +93,8 @@ class SignUpScreen extends StatelessWidget {
                         text: state.authenticationModel.statusMessage!);
                   });
               break;
+              default:
+              break;
           }
         },
         child: LayoutBuilder(

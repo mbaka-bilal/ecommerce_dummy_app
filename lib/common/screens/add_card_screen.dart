@@ -1,11 +1,16 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
-import '../repositories/database_repository.dart';
-import '../utils/app_utils.dart';
-import '../utils/appstyles.dart';
-import '../utils/constants.dart';
-import '../widgets/mybutton.dart';
-import 'custom_form.dart';
+import '../../models/card_model.dart';
+import '../../repositories/database_repository.dart';
+import '../../repositories/payment_repository.dart';
+import '../../utils/app_utils.dart';
+import '../../utils/appstyles.dart';
+import '../../utils/constants.dart';
+import '../../widgets/mybutton.dart';
+import '../../widgets/custom_form.dart';
 
 class AddCardScreen extends StatefulWidget {
   const AddCardScreen({Key? key, required this.callBack}) : super(key: key);
@@ -24,6 +29,15 @@ class _AddCardScreenState extends State<AddCardScreen> {
   final cardHolderController = TextEditingController();
   final databaseRepository = DatabaseRepository();
   final monthFocusNode = FocusNode();
+
+  //Loading indicator for checking card.
+  bool _isCheckingCard = false;
+
+  //Data about the current Card.
+  ResolveCardBin? _resolveCardBin;
+
+  Timer? _cardNumberTimer;
+  final PaymentRepository _paymentRepository = PaymentRepository();
 
   Future<void> addCardToDatabase() async {
     var snackBar = ScaffoldMessenger.of(context);
@@ -65,6 +79,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
   }
 
   void initialize() async {
+    //Check if database exists and create it if it does not.
     if (!(await databaseRepository.checkIfDatabaseExists(dtb_user))) {
       await databaseRepository.createDatabaseAndTable(dtb_user, cardTable);
     }
@@ -74,13 +89,57 @@ class _AddCardScreenState extends State<AddCardScreen> {
           databaseName: dtb_user, tableInfo: cardTable);
     }
     monthFocusNode.addListener(() {
+      //Add 0 to month if the length is 1.
       if (!(monthFocusNode.hasFocus) &&
           monthController.text.trim().isNotEmpty) {
         if (monthController.text.trim().length == 1) {
           monthController.text = "0${monthController.text}";
+          setState(() {});
         }
       }
     });
+  }
+
+  void onCardNumberChange(String? str) {
+    //Confirm card and get card info from Paystack.
+    if (str != null && str.length >= 6) {
+      String string = str;
+      if (string.length > 8) {
+        string = str.substring(0, 8);
+      }
+
+      if (_cardNumberTimer != null) {
+        _cardNumberTimer!.cancel();
+      }
+
+      _cardNumberTimer = Timer(const Duration(seconds: 1), () async {
+        _isCheckingCard = true;
+        setState(() {});
+        try {
+          final response = await _paymentRepository.checkCard(string);
+
+          if (response.statusCode == 200) {
+            final decodedResult = await jsonDecode(response.body);
+            print("result is $decodedResult");
+            _resolveCardBin = ResolveCardBin.fromJson(decodedResult);
+            _isCheckingCard = false;
+            setState(() {});
+          } else {
+            _isCheckingCard = false;
+            setState(() {});
+          }
+        } catch (e) {
+          //Fail silently.
+          debugPrint("***** Error checking card $e ******");
+          _isCheckingCard = false;
+          setState(() {});
+        }
+      });
+    } else {
+      if (_cardNumberTimer != null) {
+        _cardNumberTimer!.cancel();
+      }
+    }
   }
 
   @override
@@ -121,14 +180,56 @@ class _AddCardScreenState extends State<AddCardScreen> {
               const SizedBox(
                 height: smallSpace,
               ),
-              CustomFormField(
-                  hint: "545 5784 ****",
-                  isPassword: false,
-                  keyboardType: TextInputType.number,
-                  textEditingController: cardNumberController,
-                  formFieldValidator: (str) {
-                    return null;
-                  }),
+              Builder(builder: (context) {
+                Widget? icon;
+
+                if (_resolveCardBin != null) {
+                  if (_resolveCardBin!.data.brand.toLowerCase() == "mastercard") {
+                    icon = Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: Image.asset("assets/images/master_card.png",width: 50,height: 50),
+                    );
+                  }else if(_resolveCardBin!.data.brand.toLowerCase() == "visa"){
+                    //<a href="https://www.flaticon.com/free-icons/visa" title="visa icons">Visa icons created by Freepik - Flaticon</a>
+                    icon = Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: Image.asset("assets/images/visa.png",width: 50,height: 50),
+                    );
+                  }else if(_resolveCardBin!.data.brand.toLowerCase() == "verve"){
+                    icon = Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: Image.asset("assets/images/verve.png",width: 50,height: 50),
+                    );
+                  }
+
+                  else{
+                    icon = null;
+                  }
+                }
+
+                return Column(
+                  children: [
+                    CustomFormField(
+                        hint: "545 5784 ****",
+                        isPassword: false,
+                        trailingIcon: icon,
+                        keyboardType: TextInputType.number,
+                        textEditingController: cardNumberController,
+                        onChanged: onCardNumberChange,
+                        formFieldValidator: (str) {
+                          return null;
+                        }),
+
+                  ],
+                );
+              }),
+              if (_isCheckingCard)
+                const Column(children: [
+                  SizedBox(
+                    height: 10,
+                  ),
+                  LinearProgressIndicator(),
+                ]),
               const SizedBox(
                 height: bigSpace,
               ),

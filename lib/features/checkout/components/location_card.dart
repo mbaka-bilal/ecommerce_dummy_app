@@ -90,25 +90,25 @@ class LocationCard extends StatelessWidget {
                     ),
                   ],
                 )),
-            Expanded(
-                flex: 1,
-                child: InkWell(
-                  onTap: () {
-                    //Show options to edit and delete this item.
-                  },
-                  child: Row(
-                      children: List.generate(
-                    3,
-                    (index) => const Padding(
-                      padding: EdgeInsets.only(right: 5),
-                      // padding: const EdgeInsets.all(8.0),
-                      child: CircleAvatar(
-                        radius: 3,
-                        backgroundColor: AppColors.gray04,
-                      ),
-                    ),
-                  )),
-                ))
+            // Expanded(
+            //     flex: 1,
+            //     child: InkWell(
+            //       onTap: () {
+            //         //Show options to edit and delete this item.
+            //       },
+            //       child: Row(
+            //           children: List.generate(
+            //         3,
+            //         (index) => const Padding(
+            //           padding: EdgeInsets.only(right: 5),
+            //           // padding: const EdgeInsets.all(8.0),
+            //           child: CircleAvatar(
+            //             radius: 3,
+            //             backgroundColor: AppColors.gray04,
+            //           ),
+            //         ),
+            //       )),
+            //     ))
           ],
         ),
       ),

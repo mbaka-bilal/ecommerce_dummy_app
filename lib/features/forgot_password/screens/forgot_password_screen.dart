@@ -94,6 +94,8 @@ class ForgotPasswordScreen extends StatelessWidget {
                               text: state.authenticationModel.statusMessage!);
                         });
                     break;
+                  default:
+                    break;
                 }
               },
               child: Padding(

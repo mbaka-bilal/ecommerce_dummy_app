@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import '../../../repositories/database_repository.dart';
 import '../../../utils/appstyles.dart';
 import '../../../utils/constants.dart';
-import '../../../widgets/add_card_screen.dart';
+import '../../../common/screens/add_card_screen.dart';
 import '../../../widgets/mybutton.dart';
 import '../components/add_address_dialog.dart';
 import '../components/card_widget.dart';
+import '../components/checkout_card_dialog.dart';
 import '../components/location_card.dart';
 
 class CheckOutScreen extends StatefulWidget {
@@ -25,11 +26,10 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   int _chosenAddressIndex = 0;
   int _chosenCardIndex = 0;
   Map<String, dynamic> _chosenAddress = {};
+  final _databaseRepository = DatabaseRepository();
 
   void refreshScreen() {
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -97,7 +97,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
               const SizedBox(
                 height: bigSpace,
               ),
-
               FutureBuilder(
                   future: DatabaseRepository()
                       .fetchRecordFromLocalDatabase(dtb_user, tbl_address),
@@ -105,7 +104,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     if (snapShot.hasData) {
                       final data = snapShot.data as List<Map<String, dynamic>>;
                       //default our chosen address is the first one;
-                      _chosenAddress = data[0];
+                      // _chosenAddress = data[0];
 
                       return Column(
                           children: List.generate(
@@ -118,12 +117,35 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                               _chosenAddress = data[index];
                             });
                           },
-                          child: LocationCard(
-                            // title: "Home",
-                            address: data[index]["name"],
-                            mobileNumber: data[index]["phone_number"],
-                            isSelected:
-                                (_chosenAddressIndex == index) ? true : false,
+                          child: Dismissible(
+                            key: UniqueKey(),
+                            direction: DismissDirection.endToStart,
+                            background: const Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: EdgeInsets.only(right: 20.0),
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                )),
+                            onDismissed:
+                                (DismissDirection dismissDirection) async {
+                              await _databaseRepository
+                                  .deleteRecordFromLocalDatabase(
+                                      databaseName: dtb_user,
+                                      tableName: tbl_address,
+                                      columnId: "name",
+                                      args: data[index]["name"])
+                                  .then((value) => refreshScreen());
+                            },
+                            child: LocationCard(
+                              // title: "Home",
+                              address: data[index]["name"],
+                              mobileNumber: data[index]["phone_number"],
+                              isSelected:
+                                  (_chosenAddressIndex == index) ? true : false,
+                            ),
                           ),
                         ),
                       ));
@@ -145,8 +167,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => AddCardScreen(
-                            callBack: refreshScreen,
-                          )));
+                                callBack: refreshScreen,
+                              )));
                     },
                     child: Row(
                       children: [
@@ -169,45 +191,67 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 ],
               ),
               const SizedBox(height: bigSpace),
-
               FutureBuilder(
                 future: DatabaseRepository()
                     .fetchRecordFromLocalDatabase(dtb_user, tbl_cards),
-                builder: (context,snapShot) {
+                builder: (context, snapShot) {
                   if (snapShot.hasData) {
-                    List<Map<String,dynamic>> cards = snapShot.data as List<Map<String,dynamic>>;
+                    List<Map<String, dynamic>> cards =
+                        snapShot.data as List<Map<String, dynamic>>;
                     return Column(
                       children: List.generate(
-                      cards.length,
-                          (index) => InkWell(
-                          onTap: () {
-                            setState(() {
-                              _chosenCardIndex = index;
-                            });
-                          },
-                          child: Builder(
-                            builder: (context) {
-                              final card = CardModel(cardNumber: cards[index]["card_number"],
-                                  cardHolder: cards[index]["card_holder"],
-                                  cardType: "Debit",
-                                  cvv: cards[index]["cvv"],
-                                  expiryMonth: cards[index]["expiration_month"],
-                                  expiryYear: cards[index]["expiration_year"]);
-                              return DebitCard(
-                              // cardType: CardTypes.masterCard,
-                              cardNumber: card.cardNumber,
-                              isSelected: (_chosenCardIndex == index) ? true : false,
+                        cards.length,
+                        (index) => InkWell(onTap: () {
+                          setState(() {
+                            _chosenCardIndex = index;
+                          });
+                        }, child: Builder(
+                          builder: (context) {
+                            final card = CardModel(
+                                cardNumber: cards[index]["card_number"],
+                                cardHolder: cards[index]["card_holder"],
+                                cardType: "Debit",
+                                cvv: cards[index]["cvv"],
+                                expiryMonth: cards[index]["expiration_month"],
+                                expiryYear: cards[index]["expiration_year"]);
+                            return Dismissible(
+                              key: UniqueKey(),
+                              direction: DismissDirection.endToStart,
+                              background: const Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: 20.0),
+                                    child: Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                  )),
+                              onDismissed:
+                                  (DismissDirection dismissDirection) async {
+                                await _databaseRepository
+                                    .deleteRecordFromLocalDatabase(
+                                        databaseName: dtb_user,
+                                        tableName: tbl_cards,
+                                        columnId: "card_number",
+                                        args: card.cardNumber)
+                                    .then((value) => refreshScreen());
+                              },
+                              child: DebitCard(
+                                // cardType: CardTypes.masterCard,
+                                cardNumber: card.cardNumber,
+                                isSelected:
+                                    (_chosenCardIndex == index) ? true : false,
+                              ),
                             );
-                            },
-                          )),
-                    ),
+                          },
+                        )),
+                      ),
                     );
-                  }else{
+                  } else {
                     return Container();
                   }
                 },
               ),
-
               const SizedBox(height: bigSpace),
               Card(
                 child: Container(
@@ -294,7 +338,24 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 buttonColor: AppColors.blue,
                 width: double.infinity,
                 height: 50,
-                function: () {},
+                function: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                            // insetPadding: const EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            backgroundColor: Colors.white,
+                            child: const CheckoutDialog(
+                              cardNumber: "21212",
+                              cvv: 's111',
+                              date: '01/23',
+                              holdersName: 'jhone doe',
+                            ));
+                      });
+                },
               )
             ],
           ),
@@ -303,6 +364,3 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     );
   }
 }
-
-
-

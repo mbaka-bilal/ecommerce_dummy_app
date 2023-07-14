@@ -89,7 +89,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
               .copyWith(color: AppColors.gray03),
           fillColor: AppColors.gray07,
           filled: true,
-          suffixIcon: (widget.isPassword)
+          suffixIcon: (widget.trailingIcon != null) ? widget.trailingIcon : (widget.isPassword)
               ? IconButton(
                   onPressed: () {
                     setState(() {

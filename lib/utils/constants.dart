@@ -8,3 +8,15 @@ const String cardTable =
     "CREATE TABLE cards (card_number TEXT PRIMARY KEY NOT NULL,expiration_month TEXT NOT NULL,expiration_year TEXT NOT NULL,cvv TEXT NOT NULL,card_holder TEXT NOT NULL)";
 const String addressTable =
     "CREATE TABLE address (name TEXT PRIMARY KEY NOT NULL,phone_number TEXT NOT NULL)";
+enum RequestStatus {
+  loading,
+  success,
+  failure,
+  initial,
+}
+
+
+
+const paystackBaseUrl = "https://api.paystack.co";
+
+String resolveCardBin(String cardBin) => "$paystackBaseUrl/decision/bin/$cardBin";

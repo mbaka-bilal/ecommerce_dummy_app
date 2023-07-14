@@ -474,18 +474,19 @@ class DatabaseRepository {
     await database.execute(tableInfo);
   }
 
-  Future<bool> checkIfTableExists({required String tableName,required String databaseName}) async {
+  Future<bool> checkIfTableExists(
+      {required String tableName, required String databaseName}) async {
     var databasePath = await getDatabasesPath();
     String path = join(databasePath, databaseName);
     Database database = await openDatabase(path);
-    List<Map<String,dynamic>> count =await database.query('sqlite_master', where: 'name = ?', whereArgs: [tableName]);
+    List<Map<String, dynamic>> count = await database
+        .query('sqlite_master', where: 'name = ?', whereArgs: [tableName]);
 
-    if (count.isNotEmpty){
+    if (count.isNotEmpty) {
       return true;
-    }else{
+    } else {
       return false;
     }
-
   }
 
   Future<void> addRecordToTable(
@@ -529,10 +530,27 @@ class DatabaseRepository {
       final list = await database.query(tableName);
       return list;
     } catch (e) {
+      print("table name is $tableName");
       rethrow;
     }
   }
 
+  Future<void> deleteRecordFromLocalDatabase(
+      {required String databaseName,
+      required String tableName,
+      required String columnId,
+      required String args,
+      }) async {
+    try {
+      var databasePath = await getDatabasesPath();
+      String path = join(databasePath, databaseName);
+      Database database = await openDatabase(path);
+
+      await database.delete(tableName, where: "$columnId = ?",whereArgs: [args]);
+    } catch (e) {
+      print("Error deleting record from database $e");
+    }
+  }
 
   Future<bool> checkIfDatabaseExists(String dbName) async {
     var databasePath = await getDatabasesPath();

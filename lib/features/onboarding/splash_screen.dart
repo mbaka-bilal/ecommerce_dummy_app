@@ -62,6 +62,9 @@ class _SplashScreenState extends State<SplashScreen> {
             case AuthenticationStatus.unKnown:
               nextScreen(const OnBoardingScreen());
               break;
+            default:
+              nextScreen(const OnBoardingScreen());
+              break;
           }
         },
         child: Column(
