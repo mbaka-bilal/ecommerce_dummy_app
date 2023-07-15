@@ -448,7 +448,8 @@ class DatabaseRepository {
     }
   }
 
-  Future<void> createDatabaseAndTable(String databaseName) async {
+  Future<void> createDatabaseAndTable(
+      String databaseName, String tableInfo) async {
     try {
       print("creating database");
       var databasePath = await getDatabasesPath();
@@ -458,12 +459,47 @@ class DatabaseRepository {
         path,
         version: 1,
       );
-      await database.execute("CREATE TABLE address ("
-          "name TEXT PRIMARY KEY NOT NULL,"
-          "phone_number TEXT NOT NULL"
-          ")");
+      await database.execute(tableInfo);
     } catch (e) {
       print("error $e");
+      rethrow;
+    }
+  }
+
+  Future<void> createTable(
+      {required String databaseName, required String tableInfo}) async {
+    var databasePath = await getDatabasesPath();
+    String path = join(databasePath, databaseName);
+    Database database = await openDatabase(path);
+    await database.execute(tableInfo);
+  }
+
+  Future<bool> checkIfTableExists(
+      {required String tableName, required String databaseName}) async {
+    var databasePath = await getDatabasesPath();
+    String path = join(databasePath, databaseName);
+    Database database = await openDatabase(path);
+    List<Map<String, dynamic>> count = await database
+        .query('sqlite_master', where: 'name = ?', whereArgs: [tableName]);
+
+    if (count.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<void> addRecordToTable(
+      {required String databaseName,
+      required String tableName,
+      required Map<String, dynamic> data}) async {
+    try {
+      var databasePath = await getDatabasesPath();
+      String path = join(databasePath, databaseName);
+      Database database = await openDatabase(path);
+
+      await database.insert(tableName, data);
+    } catch (e) {
       rethrow;
     }
   }
@@ -480,21 +516,39 @@ class DatabaseRepository {
         "phone_number": phoneNumber,
       });
     } catch (e) {
-
       rethrow;
     }
   }
 
-  Future<List<Map<String,dynamic>>> fetchAddresses(String databaseName) async {
-    try{
+  Future<List<Map<String, dynamic>>> fetchRecordFromLocalDatabase(
+      String databaseName, String tableName) async {
+    try {
       var databasePath = await getDatabasesPath();
       String path = join(databasePath, databaseName);
       Database database = await openDatabase(path);
 
-      final list = await database.query("address");
+      final list = await database.query(tableName);
       return list;
-    }catch (e){
+    } catch (e) {
+      print("table name is $tableName");
       rethrow;
+    }
+  }
+
+  Future<void> deleteRecordFromLocalDatabase(
+      {required String databaseName,
+      required String tableName,
+      required String columnId,
+      required String args,
+      }) async {
+    try {
+      var databasePath = await getDatabasesPath();
+      String path = join(databasePath, databaseName);
+      Database database = await openDatabase(path);
+
+      await database.delete(tableName, where: "$columnId = ?",whereArgs: [args]);
+    } catch (e) {
+      print("Error deleting record from database $e");
     }
   }
 
@@ -504,6 +558,7 @@ class DatabaseRepository {
 
     try {
       bool value = await databaseExists(path);
+
       return value;
     } catch (e) {
       rethrow;

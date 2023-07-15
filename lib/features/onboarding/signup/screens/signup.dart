@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import '../../../../bloc/authentication_bloc.dart';
 import '../../../../bloc/authentication_state.dart';
 import '../../../../bloc/form_state_cubit.dart';
@@ -94,6 +93,8 @@ class SignUpScreen extends StatelessWidget {
                         text: state.authenticationModel.statusMessage!);
                   });
               break;
+              default:
+              break;
           }
         },
         child: LayoutBuilder(
@@ -128,11 +129,11 @@ class SignUpScreen extends StatelessWidget {
                             textEditingController: firstNameController,
                             keyboardType: TextInputType.emailAddress,
                             isPassword: false,
-                            hint: Text("jessica",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(color: Colors.grey)),
+                            // hint: Text("jessica",
+                            //     style: Theme.of(context)
+                            //         .textTheme
+                            //         .bodySmall!
+                            //         .copyWith(color: Colors.grey)),
                           ),
                           const SizedBox(
                             height: mediumSpace,
@@ -150,11 +151,11 @@ class SignUpScreen extends StatelessWidget {
                             textEditingController: lastNameController,
                             keyboardType: TextInputType.emailAddress,
                             isPassword: false,
-                            hint: Text("Maria",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(color: Colors.grey)),
+                            // hint: Text("Maria",
+                            //     style: Theme.of(context)
+                            //         .textTheme
+                            //         .bodySmall!
+                            //         .copyWith(color: Colors.grey)),
                           ),
                           const SizedBox(
                             height: mediumSpace,
@@ -172,11 +173,11 @@ class SignUpScreen extends StatelessWidget {
                             textEditingController: emailController,
                             keyboardType: TextInputType.emailAddress,
                             isPassword: false,
-                            hint: Text("jessicamaria@infomail.com",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(color: Colors.grey)),
+                            // hint: Text("jessicamaria@infomail.com",
+                            //     style: Theme.of(context)
+                            //         .textTheme
+                            //         .bodySmall!
+                            //         .copyWith(color: Colors.grey)),
                           ),
                           const SizedBox(
                             height: mediumSpace,
@@ -194,18 +195,18 @@ class SignUpScreen extends StatelessWidget {
                             isPassword: true,
                             keyboardType: TextInputType.name,
                             textEditingController: passwordController,
-                            hint: Row(
-                              children: List.generate(
-                                  10,
-                                  (index) => const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 3.0),
-                                        child: CircleAvatar(
-                                          backgroundColor: Colors.grey,
-                                          radius: 5,
-                                        ),
-                                      )),
-                            ),
+                            // hint: Row(
+                            //   children: List.generate(
+                            //       10,
+                            //       (index) => const Padding(
+                            //             padding: EdgeInsets.symmetric(
+                            //                 horizontal: 3.0),
+                            //             child: CircleAvatar(
+                            //               backgroundColor: Colors.grey,
+                            //               radius: 5,
+                            //             ),
+                            //           )),
+                            // ),
                           ),
                         ],
                       ),

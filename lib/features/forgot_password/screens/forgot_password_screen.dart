@@ -14,7 +14,6 @@ import '../../../widgets/my_form.dart';
 import '../../../widgets/mybutton.dart';
 import 'email_sent_screen.dart';
 
-
 class ForgotPasswordScreen extends StatelessWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
 
@@ -95,6 +94,8 @@ class ForgotPasswordScreen extends StatelessWidget {
                               text: state.authenticationModel.statusMessage!);
                         });
                     break;
+                  default:
+                    break;
                 }
               },
               child: Padding(
@@ -122,11 +123,11 @@ class ForgotPasswordScreen extends StatelessWidget {
                             textEditingController: emailController,
                             keyboardType: TextInputType.emailAddress,
                             isPassword: false,
-                            hint: Text("jessicamaria@infomail.com",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(color: Colors.grey)),
+                            // hint: Text("jessicamaria@infomail.com",
+                            //     style: Theme.of(context)
+                            //         .textTheme
+                            //         .bodySmall!
+                            //         .copyWith(color: Colors.grey)),
                           ),
                         ],
                       ),

@@ -96,6 +96,8 @@ class _SignUpSuccessfullyScreenState extends State<SignUpSuccessfullyScreen> {
                           text: state.authenticationModel.statusMessage!);
                     });
                 break;
+              default:
+                break;
             }
           },
           child: Column(

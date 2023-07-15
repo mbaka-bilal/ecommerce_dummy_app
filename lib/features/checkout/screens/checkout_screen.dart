@@ -1,18 +1,22 @@
-import 'package:ecommerce_dummy_app/repositories/database_repository.dart';
-import 'package:ecommerce_dummy_app/utils/app_utils.dart';
-import 'package:ecommerce_dummy_app/widgets/my_form.dart';
-import 'package:ecommerce_dummy_app/widgets/mybutton.dart';
+import 'package:ecommerce_dummy_app/models/card_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../utils/app_images.dart';
+import '../../../repositories/database_repository.dart';
 import '../../../utils/appstyles.dart';
 import '../../../utils/constants.dart';
+import '../../../common/screens/add_card_screen.dart';
+import '../../../widgets/mybutton.dart';
+import '../components/add_address_dialog.dart';
+import '../components/card_widget.dart';
+import '../components/checkout_card_dialog.dart';
+import '../components/location_card.dart';
 
 class CheckOutScreen extends StatefulWidget {
   ///The checkout screen
 
-  const CheckOutScreen({Key? key}) : super(key: key);
+  const CheckOutScreen({Key? key, required this.totalAmount}) : super(key: key);
+
+  final int totalAmount;
 
   @override
   State<CheckOutScreen> createState() => _CheckOutScreenState();
@@ -23,8 +27,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
   static const smallSpace = 10.0;
   int _chosenAddressIndex = 0;
   int _chosenCardIndex = 0;
-  Map<String,dynamic> _chosenAddress = {};
+  Map<String, dynamic> _chosenAddress = {};
+  final _databaseRepository = DatabaseRepository();
 
+  void refreshScreen() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,96 +56,106 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           child: Column(
             children: [
               const SizedBox(height: bigSpace),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Shipping To",
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          fontSize: 16,
-                        ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      final controller = TextEditingController();
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Text(
+              //       "Shipping To",
+              //       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              //             fontSize: 16,
+              //           ),
+              //     ),
+              //     InkWell(
+              //       onTap: () {
+              //         final controller = TextEditingController();
 
-                      //Show bottom sheet to add new address
-                      showDialog(
-                          context: context,
-                          builder: (context) => const Dialog(
-                                child: AddAdressCard(),
-                              )).then((value) => setState(() {
-                            print("reload");
-                          }));
-                    },
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.add,
-                          color: AppColors.gray04,
-                        ),
-                        const SizedBox(
-                          width: smallSpace,
-                        ),
-                        Text("Add New",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                    fontSize: 12, color: AppColors.gray04)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: bigSpace,
-              ),
-              // const LocationCard(
-              //   title: "Home",
-              //   address: "New Iskaton, Barlinarpur-2148, Adorana, Agartine",
-              //   mobileNumber: "+880 1224 1573 ",
-              //   isSelected: false,
+              //         //Show bottom sheet to add new address
+              //         showDialog(
+              //             context: context,
+              //             builder: (context) => const Dialog(
+              //                   child: AddAdressCard(),
+              //                 )).then((value) => setState(() {}));
+              //       },
+              //       child: Row(
+              //         children: [
+              //           const Icon(
+              //             Icons.add,
+              //             color: AppColors.gray04,
+              //           ),
+              //           const SizedBox(
+              //             width: smallSpace,
+              //           ),
+              //           Text("Add New",
+              //               style: Theme.of(context)
+              //                   .textTheme
+              //                   .bodyMedium!
+              //                   .copyWith(
+              //                       fontSize: 12, color: AppColors.gray04)),
+              //         ],
+              //       ),
+              //     ),
+              //   ],
               // ),
-              // const LocationCard(
-              //   title: "Home",
-              //   address: "New Iskaton, Barlinarpur-2148, Adorana, Agartine",
-              //   mobileNumber: "+880 1224 1573 ",
-              //   isSelected: false,
+              // const SizedBox(
+              //   height: bigSpace,
               // ),
-              FutureBuilder(
-                  future: DatabaseRepository().fetchAddresses("addresses"),
-                  builder: (context,snapShot) {
-                    if (snapShot.hasData){
-                    final data = snapShot.data as List<Map<String,dynamic>>;
-                    //default our chosen address is the first one;
-                    _chosenAddress = data[0];
+              // FutureBuilder(
+              //     future: DatabaseRepository()
+              //         .fetchRecordFromLocalDatabase(dtb_user, tbl_address),
+              //     builder: (context, snapShot) {
+              //       if (snapShot.hasData) {
+              //         final data = snapShot.data as List<Map<String, dynamic>>;
+              //         //default our chosen address is the first one;
+              //         // _chosenAddress = data[0];
 
-                      return Column(
-                        children: List.generate(
-                          data.length,
-                              (index) => InkWell(
-                            onTap: () {
-                              setState(() {
-                                _chosenAddressIndex = index;
-                                //update chosen address.
-                                _chosenAddress = data[index];
-                              });
-                            },
-                            child: LocationCard(
-                              // title: "Home",
-                              address: data[index]["name"],
-                              mobileNumber: data[index]["phone_number"],
-                              isSelected: (_chosenAddressIndex == index) ? true : false,
-                            ),
-                          ),
-                      ));
-                    }else{
-                      return Container();
-                    }
-                  }
-              ),
-              const SizedBox(height: bigSpace),
+              //         return Column(
+              //             children: List.generate(
+              //           data.length,
+              //           (index) => InkWell(
+              //             onTap: () {
+              //               setState(() {
+              //                 _chosenAddressIndex = index;
+              //                 //update chosen address.
+              //                 _chosenAddress = data[index];
+              //               });
+              //             },
+              //             child: Dismissible(
+              //               key: UniqueKey(),
+              //               direction: DismissDirection.endToStart,
+              //               background: const Align(
+              //                   alignment: Alignment.centerRight,
+              //                   child: Padding(
+              //                     padding: EdgeInsets.only(right: 20.0),
+              //                     child: Icon(
+              //                       Icons.delete,
+              //                       color: Colors.red,
+              //                     ),
+              //                   )),
+              //               onDismissed:
+              //                   (DismissDirection dismissDirection) async {
+              //                 await _databaseRepository
+              //                     .deleteRecordFromLocalDatabase(
+              //                         databaseName: dtb_user,
+              //                         tableName: tbl_address,
+              //                         columnId: "name",
+              //                         args: data[index]["name"])
+              //                     .then((value) => refreshScreen());
+              //               },
+              //               child: LocationCard(
+              //                 // title: "Home",
+              //                 address: data[index]["name"],
+              //                 mobileNumber: data[index]["phone_number"],
+              //                 isSelected:
+              //                     (_chosenAddressIndex == index) ? true : false,
+              //               ),
+              //             ),
+              //           ),
+              //         ));
+              //       } else {
+              //         return Container();
+              //       }
+              //     }),
+              // const SizedBox(height: bigSpace),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -148,7 +166,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         ),
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AddCardScreen(
+                                callBack: refreshScreen,
+                              )));
+                    },
                     child: Row(
                       children: [
                         const Icon(
@@ -170,19 +193,66 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 ],
               ),
               const SizedBox(height: bigSpace),
-              ...List.generate(
-                2,
-                (index) => InkWell(
-                    onTap: () {
-                      setState(() {
-                        _chosenCardIndex = index;
-                      });
-                    },
-                    child: DebitCard(
-                      cardType: CardTypes.masterCard,
-                      cardNumber: "121212121212121212",
-                      isSelected: (_chosenCardIndex == index) ? true : false,
-                    )),
+              FutureBuilder(
+                future: DatabaseRepository()
+                    .fetchRecordFromLocalDatabase(dtb_user, tbl_cards),
+                builder: (context, snapShot) {
+                  if (snapShot.hasData) {
+                    List<Map<String, dynamic>> cards =
+                        snapShot.data as List<Map<String, dynamic>>;
+                    return Column(
+                      children: List.generate(
+                        cards.length,
+                        (index) => InkWell(onTap: () {
+                          setState(() {
+                            _chosenCardIndex = index;
+                          });
+                        }, child: Builder(
+                          builder: (context) {
+                            final card = CardModel(
+                                cardNumber: cards[index]["card_number"],
+                                cardHolder: cards[index]["card_holder"],
+                                cardType: "Debit",
+                                cvv: cards[index]["cvv"],
+                                expiryMonth: cards[index]["expiration_month"],
+                                expiryYear: cards[index]["expiration_year"]);
+                            return Dismissible(
+                              key: UniqueKey(),
+                              direction: DismissDirection.endToStart,
+                              background: const Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: 20.0),
+                                    child: Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                  )),
+                              onDismissed:
+                                  (DismissDirection dismissDirection) async {
+                                await _databaseRepository
+                                    .deleteRecordFromLocalDatabase(
+                                        databaseName: dtb_user,
+                                        tableName: tbl_cards,
+                                        columnId: "card_number",
+                                        args: card.cardNumber)
+                                    .then((value) => refreshScreen());
+                              },
+                              child: DebitCard(
+                                // cardType: CardTypes.masterCard,
+                                cardNumber: card.cardNumber,
+                                isSelected:
+                                    (_chosenCardIndex == index) ? true : false,
+                              ),
+                            );
+                          },
+                        )),
+                      ),
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
               ),
               const SizedBox(height: bigSpace),
               Card(
@@ -213,7 +283,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 .copyWith(
                                     fontSize: 14, color: AppColors.gray03),
                           ),
-                          Text("N 3000",
+                          Text("N ${widget.totalAmount}",
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium!
@@ -226,13 +296,13 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Delivery Fee: ",
+                          Text("Charge: ",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
                                   .copyWith(
                                       fontSize: 14, color: AppColors.gray03)),
-                          Text("N 200",
+                          Text("N 500",
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium!
@@ -251,7 +321,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                   .bodySmall!
                                   .copyWith(
                                       fontSize: 14, color: AppColors.gray03)),
-                          Text("N 3200",
+                          Text("N ${widget.totalAmount + 500}",
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium!
@@ -270,272 +340,27 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 buttonColor: AppColors.blue,
                 width: double.infinity,
                 height: 50,
-                function: () {},
+                function: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                            // insetPadding: const EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            backgroundColor: Colors.white,
+                            child: const CheckoutDialog(
+                              cardNumber: "21212",
+                              cvv: 's111',
+                              date: '01/23',
+                              holdersName: 'jhone doe',
+                            ));
+                      });
+                },
               )
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class LocationCard extends StatelessWidget {
-  const LocationCard(
-      {Key? key,
-      // required this.title,
-      required this.address,
-      required this.isSelected,
-      required this.mobileNumber})
-      : super(key: key);
-
-  // final String title;
-  final String address;
-  final bool isSelected;
-  final String mobileNumber;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 20,
-              height: 20,
-              margin: const EdgeInsets.only(right: 15),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: AppColors.blue,
-                  ),
-                  borderRadius: BorderRadius.circular(100)),
-              child: Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: CircleAvatar(
-                  radius: 10,
-                  backgroundColor: (isSelected) ? AppColors.blue : Colors.white,
-                ),
-              ),
-            ),
-            Expanded(
-                flex: 5,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Text(
-                    //   title,
-                    //   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    //         fontSize: 16,
-                    //       ),
-                    // ),
-                    // const SizedBox(
-                    //   height: 10,
-                    // ),
-                    Text(
-                      address,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(fontSize: 14, color: AppColors.gray04),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Wrap(
-                      children: [
-                        Text(
-                          "Mobile: ",
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .copyWith(fontSize: 14, color: AppColors.gray02),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          mobileNumber,
-                          softWrap: true,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(fontSize: 14, color: AppColors.gray03),
-                        )
-                      ],
-                    ),
-                  ],
-                )),
-            Expanded(
-                flex: 1,
-                child: InkWell(
-                  onTap: () {
-                    //Show options to edit and delete this item.
-                  },
-                  child: Row(
-                      children: List.generate(
-                    3,
-                    (index) => const Padding(
-                      padding: EdgeInsets.only(right: 5),
-                      // padding: const EdgeInsets.all(8.0),
-                      child: CircleAvatar(
-                        radius: 3,
-                        backgroundColor: AppColors.gray04,
-                      ),
-                    ),
-                  )),
-                ))
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-enum CardTypes {
-  masterCard,
-  visaCard,
-}
-
-class DebitCard extends StatelessWidget {
-  const DebitCard({
-    Key? key,
-    required this.cardType,
-    required this.cardNumber,
-    required this.isSelected,
-  }) : super(key: key);
-
-  final CardTypes cardType;
-  final String cardNumber;
-  final bool isSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Image.asset(AppImages.masterCardPng),
-                const SizedBox(
-                  width: 10,
-                ),
-                Text(cardNumber.hideCardInfo),
-                const SizedBox(
-                  width: 10,
-                ),
-              ],
-            ),
-            Container(
-              width: 20,
-              height: 20,
-              margin: const EdgeInsets.only(right: 15),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: AppColors.blue,
-                  ),
-                  borderRadius: BorderRadius.circular(100)),
-              child: Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: CircleAvatar(
-                  radius: 10,
-                  backgroundColor: (isSelected) ? AppColors.blue : Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class AddAdressCard extends StatelessWidget {
-  const AddAdressCard({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final addressController = TextEditingController();
-    final phoneNumberController = TextEditingController();
-    final databaseRepo = DatabaseRepository();
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 10),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-                height: 200,
-                child: TextFormField(
-                  textAlignVertical: TextAlignVertical.top,
-                  decoration: InputDecoration(
-                      hintText: "Enter address",
-                      fillColor: AppColors.gray07,
-                      filled: true,
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(12))),
-                  expands: true,
-                  minLines: null,
-                  maxLines: null,
-                  controller: addressController,
-                )),
-            const SizedBox(
-              height: smallSpace,
-            ),
-            TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                  hintText: "Enter phone number",
-                  fillColor: AppColors.gray07,
-                  filled: true,
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(12))),
-              controller: phoneNumberController,
-            ),
-            const SizedBox(
-              height: smallSpace,
-            ),
-            MyButton(
-              text: "Done",
-              buttonColor: AppColors.blue,
-              width: double.infinity,
-              height: 50,
-              function: () async {
-                try {
-                  if (await databaseRepo.checkIfDatabaseExists("addresses")) {
-                    //Add record to the database
-                    if (addressController.text.trim().isEmpty ||
-                        phoneNumberController.text.trim().isEmpty) {
-                      throw EmptyFieldException();
-                    }
-                    await databaseRepo.addAddressToDatabase("addresses",
-                        addressController.text, phoneNumberController.text);
-                  } else {
-                    await databaseRepo.createDatabaseAndTable("addresses");
-                  }
-                } catch (e) {
-                  String error = e.toString();
-
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    duration: const Duration(seconds: 2),
-                    content: Text((error.contains("UNIQUE constraint failed"))
-                        ? "Address already exists"
-                        : "Error could not add to database"),
-                  ));
-                }
-              },
-            )
-          ],
         ),
       ),
     );
