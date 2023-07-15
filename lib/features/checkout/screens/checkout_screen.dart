@@ -14,7 +14,9 @@ import '../components/location_card.dart';
 class CheckOutScreen extends StatefulWidget {
   ///The checkout screen
 
-  const CheckOutScreen({Key? key}) : super(key: key);
+  const CheckOutScreen({Key? key, required this.totalAmount}) : super(key: key);
+
+  final int totalAmount;
 
   @override
   State<CheckOutScreen> createState() => _CheckOutScreenState();
@@ -54,106 +56,106 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           child: Column(
             children: [
               const SizedBox(height: bigSpace),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Shipping To",
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          fontSize: 16,
-                        ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      final controller = TextEditingController();
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Text(
+              //       "Shipping To",
+              //       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              //             fontSize: 16,
+              //           ),
+              //     ),
+              //     InkWell(
+              //       onTap: () {
+              //         final controller = TextEditingController();
 
-                      //Show bottom sheet to add new address
-                      showDialog(
-                          context: context,
-                          builder: (context) => const Dialog(
-                                child: AddAdressCard(),
-                              )).then((value) => setState(() {}));
-                    },
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.add,
-                          color: AppColors.gray04,
-                        ),
-                        const SizedBox(
-                          width: smallSpace,
-                        ),
-                        Text("Add New",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                                    fontSize: 12, color: AppColors.gray04)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: bigSpace,
-              ),
-              FutureBuilder(
-                  future: DatabaseRepository()
-                      .fetchRecordFromLocalDatabase(dtb_user, tbl_address),
-                  builder: (context, snapShot) {
-                    if (snapShot.hasData) {
-                      final data = snapShot.data as List<Map<String, dynamic>>;
-                      //default our chosen address is the first one;
-                      // _chosenAddress = data[0];
+              //         //Show bottom sheet to add new address
+              //         showDialog(
+              //             context: context,
+              //             builder: (context) => const Dialog(
+              //                   child: AddAdressCard(),
+              //                 )).then((value) => setState(() {}));
+              //       },
+              //       child: Row(
+              //         children: [
+              //           const Icon(
+              //             Icons.add,
+              //             color: AppColors.gray04,
+              //           ),
+              //           const SizedBox(
+              //             width: smallSpace,
+              //           ),
+              //           Text("Add New",
+              //               style: Theme.of(context)
+              //                   .textTheme
+              //                   .bodyMedium!
+              //                   .copyWith(
+              //                       fontSize: 12, color: AppColors.gray04)),
+              //         ],
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // const SizedBox(
+              //   height: bigSpace,
+              // ),
+              // FutureBuilder(
+              //     future: DatabaseRepository()
+              //         .fetchRecordFromLocalDatabase(dtb_user, tbl_address),
+              //     builder: (context, snapShot) {
+              //       if (snapShot.hasData) {
+              //         final data = snapShot.data as List<Map<String, dynamic>>;
+              //         //default our chosen address is the first one;
+              //         // _chosenAddress = data[0];
 
-                      return Column(
-                          children: List.generate(
-                        data.length,
-                        (index) => InkWell(
-                          onTap: () {
-                            setState(() {
-                              _chosenAddressIndex = index;
-                              //update chosen address.
-                              _chosenAddress = data[index];
-                            });
-                          },
-                          child: Dismissible(
-                            key: UniqueKey(),
-                            direction: DismissDirection.endToStart,
-                            background: const Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                  padding: EdgeInsets.only(right: 20.0),
-                                  child: Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  ),
-                                )),
-                            onDismissed:
-                                (DismissDirection dismissDirection) async {
-                              await _databaseRepository
-                                  .deleteRecordFromLocalDatabase(
-                                      databaseName: dtb_user,
-                                      tableName: tbl_address,
-                                      columnId: "name",
-                                      args: data[index]["name"])
-                                  .then((value) => refreshScreen());
-                            },
-                            child: LocationCard(
-                              // title: "Home",
-                              address: data[index]["name"],
-                              mobileNumber: data[index]["phone_number"],
-                              isSelected:
-                                  (_chosenAddressIndex == index) ? true : false,
-                            ),
-                          ),
-                        ),
-                      ));
-                    } else {
-                      return Container();
-                    }
-                  }),
-              const SizedBox(height: bigSpace),
+              //         return Column(
+              //             children: List.generate(
+              //           data.length,
+              //           (index) => InkWell(
+              //             onTap: () {
+              //               setState(() {
+              //                 _chosenAddressIndex = index;
+              //                 //update chosen address.
+              //                 _chosenAddress = data[index];
+              //               });
+              //             },
+              //             child: Dismissible(
+              //               key: UniqueKey(),
+              //               direction: DismissDirection.endToStart,
+              //               background: const Align(
+              //                   alignment: Alignment.centerRight,
+              //                   child: Padding(
+              //                     padding: EdgeInsets.only(right: 20.0),
+              //                     child: Icon(
+              //                       Icons.delete,
+              //                       color: Colors.red,
+              //                     ),
+              //                   )),
+              //               onDismissed:
+              //                   (DismissDirection dismissDirection) async {
+              //                 await _databaseRepository
+              //                     .deleteRecordFromLocalDatabase(
+              //                         databaseName: dtb_user,
+              //                         tableName: tbl_address,
+              //                         columnId: "name",
+              //                         args: data[index]["name"])
+              //                     .then((value) => refreshScreen());
+              //               },
+              //               child: LocationCard(
+              //                 // title: "Home",
+              //                 address: data[index]["name"],
+              //                 mobileNumber: data[index]["phone_number"],
+              //                 isSelected:
+              //                     (_chosenAddressIndex == index) ? true : false,
+              //               ),
+              //             ),
+              //           ),
+              //         ));
+              //       } else {
+              //         return Container();
+              //       }
+              //     }),
+              // const SizedBox(height: bigSpace),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -281,7 +283,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 .copyWith(
                                     fontSize: 14, color: AppColors.gray03),
                           ),
-                          Text("N 3000",
+                          Text("N ${widget.totalAmount}",
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium!
@@ -294,13 +296,13 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Delivery Fee: ",
+                          Text("Charge: ",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
                                   .copyWith(
                                       fontSize: 14, color: AppColors.gray03)),
-                          Text("N 200",
+                          Text("N 500",
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium!
@@ -319,7 +321,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                   .bodySmall!
                                   .copyWith(
                                       fontSize: 14, color: AppColors.gray03)),
-                          Text("N 3200",
+                          Text("N ${widget.totalAmount + 500}",
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium!

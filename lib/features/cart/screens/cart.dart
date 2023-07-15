@@ -35,7 +35,7 @@ class CartScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: BlocBuilder<CartBloc, cart_state.CartState>(
                 builder: (context, state) {
-                  print("item count is ${state.items.length}");
+                  debugPrint("item count is ${state.items.length}");
 
                   return Column(
                     mainAxisSize: MainAxisSize.max,
@@ -64,8 +64,8 @@ class CartScreen extends StatelessWidget {
                             height: 60,
                             function: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      const CheckOutScreen()));
+                                  builder: (context) => CheckOutScreen(
+                                      totalAmount: state.totalCost)));
                             },
                           )
                         ],
