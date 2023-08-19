@@ -2,15 +2,6 @@
 
 A dummy ecommerce app
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+<img src="https://github.com/mbaka-bilal/ecommerce_dummy_app/assets/68550309/b3d49275-9a39-4fdc-8534-ba135c576238" width=30%>|<img src="https://github.com/mbaka-bilal/ecommerce_dummy_app/assets/68550309/fa6735ae-926f-40a0-afab-e8f800b21185" width=30%>|<img src="https://github.com/mbaka-bilal/ecommerce_dummy_app/assets/68550309/1cbe0723-4376-4898-8e81-2c37aa986dfd" width=30%>|<img src="https://github.com/mbaka-bilal/ecommerce_dummy_app/assets/68550309/6e1d70d7-836c-4d91-a616-f4211aca971e" width=30%>
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
