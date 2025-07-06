@@ -1,12 +1,11 @@
-import 'package:ecommerce_dummy_app/models/user_model.dart';
+import 'package:ecommerce_dummy_app/features/profile/data/models/user_model.dart';
 
-abstract class UserInfoEvent{
+abstract class UserInfoEvent {
   const UserInfoEvent();
 }
 
-class UserInfoChanged extends UserInfoEvent{
+class UserInfoChanged extends UserInfoEvent {
   const UserInfoChanged(this.user);
 
-  final User user;
+  final UserModel user;
 }
-

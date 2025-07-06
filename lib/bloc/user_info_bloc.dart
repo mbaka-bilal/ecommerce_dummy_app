@@ -5,12 +5,12 @@ import 'package:ecommerce_dummy_app/bloc/user_info_state.dart';
 import 'package:ecommerce_dummy_app/repositories/user_repository.dart';
 import 'package:bloc/bloc.dart';
 
-import '../models/user_model.dart';
+import '../features/profile/data/models/user_model.dart';
 
 class UserInfoBloc extends Bloc<UserInfoEvent, UserInfoState> {
   UserInfoBloc({required UserRepository userRepository})
-      : _userRepository = userRepository,
-        super(const UserInfoState.unKnown()) {
+    : _userRepository = userRepository,
+      super(const UserInfoState.unKnown()) {
     on<UserInfoChanged>(_onUserInfoChanged);
     _streamSubscription = _userRepository.status.listen((event) {
       add(UserInfoChanged(event));
@@ -21,12 +21,16 @@ class UserInfoBloc extends Bloc<UserInfoEvent, UserInfoState> {
     UserInfoChanged event,
     Emitter<UserInfoState> state,
   ) async {
-    emit(UserInfoState.newInfo(User(
-      event.user.firstName,
-      event.user.lastName,
-      event.user.email,
-      event.user.uid,
-    )));
+    emit(
+      UserInfoState.newInfo(
+        UserModel(
+          firstName: event.user.firstName,
+          lastName: event.user.lastName,
+          email: event.user.email,
+          uid: event.user.uid,
+        ),
+      ),
+    );
   }
 
   @override
@@ -36,5 +40,5 @@ class UserInfoBloc extends Bloc<UserInfoEvent, UserInfoState> {
   }
 
   final UserRepository _userRepository;
-  late StreamSubscription<User> _streamSubscription;
+  late StreamSubscription<UserModel> _streamSubscription;
 }

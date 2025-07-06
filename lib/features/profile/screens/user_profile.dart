@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../bloc/authentication_bloc.dart';
+import '../../onboarding/viewmodel/authentication_bloc/authentication_bloc.dart';
 import '../../../bloc/user_info_bloc.dart';
 import '../../../bloc/user_info_state.dart';
-import '../../../repositories/authentication_respository.dart';
+import '../../onboarding/domain/repository/authentication_respository.dart';
 import '../../../repositories/user_repository.dart';
 import '../../../utils/app_images.dart';
 import '../../../utils/appstyles.dart';
-import '../../onboarding/login/screens/login_screen.dart';
+import '../../authentication/views/screens/login_screen.dart';
 
 
 class UserProfile extends StatelessWidget {

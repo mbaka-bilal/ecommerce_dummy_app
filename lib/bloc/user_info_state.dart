@@ -1,15 +1,18 @@
 import 'package:equatable/equatable.dart';
 
-import '../models/user_model.dart';
+import '../features/profile/data/models/user_model.dart';
 
 class UserInfoState extends Equatable {
   const UserInfoState._({required this.user});
 
-  const UserInfoState.unKnown() : this._(user: const User("", "", "",""));
+  const UserInfoState.unKnown()
+    : this._(
+        user: const UserModel(firstName: "", lastName: "", email: "", uid: ""),
+      );
 
-  const UserInfoState.newInfo(User userInfo) : this._(user: userInfo);
+  const UserInfoState.newInfo(UserModel userInfo) : this._(user: userInfo);
 
-  final User user;
+  final UserModel user;
 
   @override
   List<Object?> get props => [user];
