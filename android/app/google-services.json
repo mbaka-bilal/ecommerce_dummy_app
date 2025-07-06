@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "522677432",
-    "project_id": "dummy-ecommerce-app",
-    "storage_bucket": "dummy-ecommerce-app.appspot.com"
+    "project_number": "423541042778",
+    "project_id": "buy-stuff-39f69",
+    "storage_bucket": "buy-stuff-39f69.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:522677432:android:d577334fd8bd638fd7d84d",
+        "mobilesdk_app_id": "1:423541042778:android:c4fa8525cbd4b30354b263",
         "android_client_info": {
-          "package_name": "com.thepocketmerlin.ecommerce_dummy_app"
+          "package_name": "com.buystuff.app"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "522677432-fq1ltu6n11nqdi3q00ua1tr5r5iosb5n.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDEu1LqX4y5DAqLgj3u5wLaLZrVwPHQ290"
+          "current_key": "AIzaSyD4agsBGH7FvLhSr_IGM7g4B3nEs2snFoI"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "522677432-fq1ltu6n11nqdi3q00ua1tr5r5iosb5n.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

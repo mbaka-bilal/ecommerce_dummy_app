@@ -1,4 +1,4 @@
-package com.thepocketmerlin.ecommerce_dummy_app
+package com.buystuff.app
 
 import io.flutter.embedding.android.FlutterActivity
 
