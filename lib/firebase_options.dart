@@ -70,6 +70,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '423541042778',
     projectId: 'buy-stuff-39f69',
     storageBucket: 'buy-stuff-39f69.firebasestorage.app',
+    iosClientId: '423541042778-7uuopncpj35f24jcdaod84m6qksd884k.apps.googleusercontent.com',
     iosBundleId: 'com.thepocketmerlin.ecommerceDummyApp',
   );
+
 }

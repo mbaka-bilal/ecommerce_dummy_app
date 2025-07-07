@@ -12,7 +12,12 @@
           "package_name": "com.buystuff.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "423541042778-bpv5jqcbqbu4lv1l9jm2u6nbom42f9gs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD4agsBGH7FvLhSr_IGM7g4B3nEs2snFoI"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "423541042778-bpv5jqcbqbu4lv1l9jm2u6nbom42f9gs.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "423541042778-7uuopncpj35f24jcdaod84m6qksd884k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.thepocketmerlin.ecommerceDummyApp"
+              }
+            }
+          ]
         }
       }
     }
