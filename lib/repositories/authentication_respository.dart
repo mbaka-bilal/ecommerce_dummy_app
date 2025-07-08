@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../models/authentication_model.dart';
-import 'user_repository.dart';
 // import '../models/user_model.dart' as user_model;
 
 class AuthenticationRepository {

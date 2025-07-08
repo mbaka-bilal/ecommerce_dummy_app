@@ -136,7 +136,7 @@ class RowOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final nav = Navigator.of(context);
-    final authBloc = context.read<AuthenticationBloc>();
+    // final authBloc = context.read<AuthenticationBloc>();
     final userBloc = context.read<UserInfoBloc>();
     final authRepository =
         RepositoryProvider.of<AuthenticationRepository>(context);
@@ -145,8 +145,8 @@ class RowOption extends StatelessWidget {
     return InkWell(
       onTap: () async {
         if (title == "Sign Out") {
-          await authBloc.close();
-          await userBloc.close();
+          // await authBloc.close();
+          // await userBloc.close();
           await authRepository.logOut();
           authRepository.dispose();
           userRepository.dispose();

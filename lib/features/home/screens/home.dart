@@ -21,10 +21,7 @@ import '../../../repositories/database_repository.dart';
 import '../../../utils/app_images.dart';
 import '../../../utils/appstyles.dart';
 
-enum ProductType {
-  latestProduct,
-  popularProduct,
-}
+enum ProductType { latestProduct, popularProduct }
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -47,11 +44,15 @@ class _HomeState extends State<Home> {
     RepositoryProvider.of<DatabaseRepository>(context).fetchPopularProducts();
     _latestProductScrollController.addListener(() {
       _scrollListener(
-          _latestProductScrollController, ProductType.latestProduct);
+        _latestProductScrollController,
+        ProductType.latestProduct,
+      );
     });
     _popularProductScrollController.addListener(() {
       _scrollListener(
-          _popularProductScrollController, ProductType.popularProduct);
+        _popularProductScrollController,
+        ProductType.popularProduct,
+      );
     });
   }
 
@@ -69,16 +70,20 @@ class _HomeState extends State<Home> {
       switch (type) {
         case ProductType.latestProduct:
           RepositoryProvider.of<DatabaseRepository>(context).fetchProducts(
-              context.read<ProductBloc>().state.products.last.documentSnapshot);
+            context.read<ProductBloc>().state.products.last.documentSnapshot,
+          );
           break;
         case ProductType.popularProduct:
-          RepositoryProvider.of<DatabaseRepository>(context)
-              .fetchPopularProducts(context
-                  .read<PopularProductsBloc>()
-                  .state
-                  .popularProducts
-                  .last
-                  .documentSnapshot);
+          RepositoryProvider.of<DatabaseRepository>(
+            context,
+          ).fetchPopularProducts(
+            context
+                .read<PopularProductsBloc>()
+                .state
+                .popularProducts
+                .last
+                .documentSnapshot,
+          );
           break;
       }
     }
@@ -88,100 +93,97 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
                       onTap: () {
                         //TODO show app drawer
                       },
-                      child: const Icon(
-                        Icons.menu,
-                      )),
-                  ClipOval(
-                    child: Image.asset(
-                      AppImages.defaultProfilePicPng,
-                      scale: 1,
+                      child: const Icon(Icons.menu),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: bigSpace,
-              ),
-              Text(
-                "Find your favourite Products",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(
-                height: bigSpace,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const SearchResultScreen(
-                                  searchFieldSelected: true,
-                                )));
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        decoration: BoxDecoration(
+                    ClipOval(
+                      child: Image.asset(
+                        AppImages.defaultProfilePicPng,
+                        scale: 1,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: bigSpace),
+                Text(
+                  "Find your favourite Products",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: bigSpace),
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const SearchResultScreen(
+                                searchFieldSelected: true,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          decoration: BoxDecoration(
                             color: AppColors.gray07,
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Row(
-                          children: [
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            const Icon(
-                              Icons.search,
-                              color: AppColors.gray03,
-                              size: 20,
-                            ),
-                            Text(
-                              "Search",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(color: AppColors.gray04),
-                            ),
-                          ],
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Row(
+                            children: [
+                              const SizedBox(width: 20),
+                              const Icon(
+                                Icons.search,
+                                color: AppColors.gray03,
+                                size: 20,
+                              ),
+                              Text(
+                                "Search",
+                                style: Theme.of(context).textTheme.bodySmall!
+                                    .copyWith(color: AppColors.gray04),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: smallSpace,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const FilterScreen(
-                                navigateToSearchScreen: true,
-                              )));
-                    },
-                    child: Container(
+                    const SizedBox(width: smallSpace),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const FilterScreen(
+                              navigateToSearchScreen: true,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
                         margin: const EdgeInsets.only(left: 5),
                         padding: const EdgeInsets.all(18),
                         decoration: BoxDecoration(
-                            color: AppColors.blue,
-                            borderRadius: BorderRadius.circular(12)),
-                        child: SvgPicture.asset(AppImages.filters)),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: bigSpace,
-              ),
-              SizedBox(
+                          color: AppColors.blue,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: SvgPicture.asset(AppImages.filters),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: bigSpace),
+                SizedBox(
                   height: MediaQuery.of(context).size.height / 8,
                   child: FutureBuilder(
                     future: fetchCategories,
@@ -191,161 +193,155 @@ class _HomeState extends State<Home> {
                           List<ProductModel> categories =
                               snapShot.data as List<ProductModel>;
                           return ListView.separated(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: categories.length,
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(
-                                  width: 10,
-                                );
-                              },
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: categories.length,
+                            separatorBuilder: (context, index) {
+                              return const SizedBox(width: 10);
+                            },
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
                                       builder: (context) => CategoryScreen(
-                                          categoryTitle:
-                                              categories[index].title),
-                                    ));
-                                  },
-                                  child: CategoryCard(
-                                    title: categories[index].title,
-                                    imageUrl: categories[index].imageUrl,
-                                  ),
-                                );
-                              });
+                                        categoryTitle: categories[index].title,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: CategoryCard(
+                                  title: categories[index].title,
+                                  imageUrl: categories[index].imageUrl,
+                                ),
+                              );
+                            },
+                          );
                         } else {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
                         }
                       } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return const Center(child: CircularProgressIndicator());
                       }
                     },
-                  )),
-              const SizedBox(
-                height: smallSpace,
-              ),
+                  ),
+                ),
+                const SizedBox(height: smallSpace),
 
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     Text(
-              //       "Latest",
-              //       style: Theme.of(context)
-              //           .textTheme
-              //           .bodyMedium!
-              //           .copyWith(fontSize: 16),
-              //     ),
-              //     InkWell(
-              //       onTap: () {},
-              //       child: Text(
-              //         "View All",
-              //         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              //               color: AppColors.gray03,
-              //               fontSize: 12,
-              //             ),
-              //       ),
-              //     )
-              //   ],
-              // ),
-              const SizedBox(
-                height: smallSpace,
-              ),
-              BlocBuilder<ProductBloc, ProductState>(
-                builder: (context, state) {
-                  if (state.status == ProductStatus.success) {
-                    return SizedBox(
-                      height: MediaQuery.of(context).size.height / 4,
-                      child: ListView.separated(
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Text(
+                //       "Latest",
+                //       style: Theme.of(context)
+                //           .textTheme
+                //           .bodyMedium!
+                //           .copyWith(fontSize: 16),
+                //     ),
+                //     InkWell(
+                //       onTap: () {},
+                //       child: Text(
+                //         "View All",
+                //         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                //               color: AppColors.gray03,
+                //               fontSize: 12,
+                //             ),
+                //       ),
+                //     )
+                //   ],
+                // ),
+                const SizedBox(height: smallSpace),
+                BlocBuilder<ProductBloc, ProductState>(
+                  builder: (context, state) {
+                    if (state.status == ProductStatus.success) {
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height / 4,
+                        child: ListView.separated(
                           controller: _latestProductScrollController,
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
                           itemCount: state.products.length,
                           separatorBuilder: (context, index) {
-                            return const SizedBox(
-                              width: 20,
-                            );
+                            return const SizedBox(width: 20);
                           },
                           itemBuilder: (context, index) {
                             return GestureDetector(
                               onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
                                     builder: (context) => ProductInfo(
-                                      documentID: state.products[index].documentID,
+                                      documentID:
+                                          state.products[index].documentID,
                                       imageUrl: state.products[index].imageUrl,
-                                      productCost: state.products[index].amount!,
-                                      productDescription: state.products[index].description!,
+                                      productCost:
+                                          state.products[index].amount!,
+                                      productDescription:
+                                          state.products[index].description!,
                                       productName: state.products[index].title!,
                                       productRating: double.tryParse(
-                                          "${state.products[index].rating}")!,
-                                    )));
+                                        "${state.products[index].rating}",
+                                      )!,
+                                    ),
+                                  ),
+                                );
                               },
                               child: LikeItemDisplay(
-                                  imageLink: state.products[index].imageUrl,
-                                  title: state.products[index].title,
-                                  amount: state.products[index].amount!,
-                                  documentID: state.products[index].documentID,
-                                  rating: double.tryParse(
-                                      "${state.products[index].rating}")!),
+                                imageLink: state.products[index].imageUrl,
+                                title: state.products[index].title,
+                                amount: state.products[index].amount!,
+                                documentID: state.products[index].documentID,
+                                rating: double.tryParse(
+                                  "${state.products[index].rating}",
+                                )!,
+                              ),
                             );
-                          }),
-                    );
-                  } else if (state.status == ProductStatus.initial) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else {
-                    return const Text("Error");
-                  }
-                },
-              ),
-              const SizedBox(
-                height: smallSpace,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Popular",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(fontSize: 16),
-                  ),
-                  // InkWell(
-                  //   onTap: () {},
-                  //   child: Text(
-                  //     "View All",
-                  //     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  //           color: AppColors.gray03,
-                  //           fontSize: 12,
-                  //         ),
-                  //   ),
-                  // )
-                ],
-              ),
-              const SizedBox(
-                height: smallSpace,
-              ),
-              BlocBuilder<PopularProductsBloc, PopularProductState>(
-                builder: (context, state) {
-                  if (state.status == PopularProductStatus.success) {
-                    return SizedBox(
-                      height: MediaQuery.of(context).size.height / 8,
-                      child: ListView.separated(
+                          },
+                        ),
+                      );
+                    } else if (state.status == ProductStatus.initial) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else {
+                      return const Text("Error");
+                    }
+                  },
+                ),
+                const SizedBox(height: smallSpace),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Popular",
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium!.copyWith(fontSize: 16),
+                    ),
+                    // InkWell(
+                    //   onTap: () {},
+                    //   child: Text(
+                    //     "View All",
+                    //     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    //           color: AppColors.gray03,
+                    //           fontSize: 12,
+                    //         ),
+                    //   ),
+                    // )
+                  ],
+                ),
+                const SizedBox(height: smallSpace),
+                BlocBuilder<PopularProductsBloc, PopularProductState>(
+                  builder: (context, state) {
+                    if (state.status == PopularProductStatus.success) {
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height / 8,
+                        child: ListView.separated(
                           controller: _popularProductScrollController,
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
                           itemCount: state.popularProducts.length,
                           separatorBuilder: (context, index) {
-                            return const SizedBox(
-                              width: 20,
-                            );
+                            return const SizedBox(width: 20);
                           },
                           itemBuilder: (context, index) {
                             // print("the docs is ${docs[index]["title"]}");
@@ -355,25 +351,22 @@ class _HomeState extends State<Home> {
                               itemName: state.popularProducts[index].title,
                               amount: 1000,
                             );
-                          }),
-                    );
-                  } else if (state.status == PopularProductStatus.initial) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else {
-                    if (state.popularProducts.isNotEmpty) {
-                      return SizedBox(
-                        height: MediaQuery.of(context).size.height / 4,
-                        child: ListView.separated(
+                          },
+                        ),
+                      );
+                    } else if (state.status == PopularProductStatus.initial) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else {
+                      if (state.popularProducts.isNotEmpty) {
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height / 4,
+                          child: ListView.separated(
                             controller: _popularProductScrollController,
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             itemCount: state.popularProducts.length + 1,
                             separatorBuilder: (context, index) {
-                              return const SizedBox(
-                                width: 20,
-                              );
+                              return const SizedBox(width: 20);
                             },
                             itemBuilder: (context, index) {
                               if (index == state.popularProducts.length) {
@@ -386,18 +379,20 @@ class _HomeState extends State<Home> {
                                   amount: 1000,
                                 );
                               }
-                            }),
-                      );
-                    } else {
-                      return const Text("Error");
+                            },
+                          ),
+                        );
+                      } else {
+                        return const Text("Error");
+                      }
                     }
-                  }
-                },
-              ),
-            ],
+                  },
+                ),
+              ],
+            ),
           ),
         ),
-      )),
+      ),
     );
   }
 }
